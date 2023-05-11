@@ -1,4 +1,5 @@
 import ThemeSwitch from './ThemeSwitch';
+import FilterModal from './components/FilterModal/Index';
 import FilterSection from './components/FilterSection/Index';
 
 function Index() {
@@ -6,6 +7,7 @@ function Index() {
     <div>
       <FilterSection />
       <ThemeSwitch />
+      <FilterModal />
     </div>
   );
 }
