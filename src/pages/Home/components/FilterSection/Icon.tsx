@@ -17,9 +17,7 @@ function Icon(props: IconProps) {
   const checkImageLoaded = () => {
     console.log(imgRef.current?.complete);
 
-    setTimeout(() => {
-      setIsLoading(!imgRef.current?.complete);
-    }, 2000);
+    setIsLoading(!imgRef.current?.complete);
   };
 
   // ADD A LOADING CLASS DIRECTLY TO THE IMG AND SPAN
