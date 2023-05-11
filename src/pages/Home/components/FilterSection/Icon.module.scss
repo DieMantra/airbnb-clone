@@ -1,0 +1,130 @@
+@use 'src/styles/abstract/' as *;
+
+.wrapper {
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  flex: 1 0 $size-22;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $size-7;
+
+  text-align: center;
+  border-radius: $radius-md;
+  padding-top: $size-5;
+  padding-bottom: $size-10;
+  padding-inline: $size-5;
+
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  $trans-in: all 0.1s ease;
+  $trans-out: all 0.2s ease-out;
+  transition: $trans-out;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: $size-2;
+    background-color: transparent;
+    transition: $trans-out;
+  }
+
+  & img {
+    width: $size-15;
+    height: $size-15;
+    opacity: 0.7;
+    transition: $trans-out;
+  }
+  & span {
+    // height: $size-8;
+
+    font-size: $text-xl;
+    transition: $trans-out;
+    width: max-content;
+  }
+
+  @include hover {
+    color: var(--text-primary);
+    transition: $trans-in;
+
+    &::after {
+      background-color: var(--bg-additive-2x);
+      transition: $trans-in;
+      width: 85%;
+    }
+
+    & img {
+      opacity: 1;
+      transition: $trans-in;
+    }
+  }
+
+  &[data-focus-visible='true'] {
+    color: var(--text-primary);
+    transition: $trans-in;
+    outline: 3px solid var(--stroke-outline);
+    outline-offset: $size-1;
+
+    &::after {
+      background-color: var(--bg-additive-2x);
+      transition: $trans-in;
+      width: 85%;
+    }
+
+    & img {
+      opacity: 1;
+      transition: $trans-in;
+    }
+  }
+
+  &[data-pressed='true'] {
+    scale: 0.98;
+  }
+
+  &[data-pressed='true'],
+  &[data-selected='true'] {
+    color: var(--text-primary);
+
+    &::after {
+      background-color: var(--icon-active);
+      width: 85%;
+    }
+
+    & img {
+      opacity: 1;
+    }
+  }
+}
+
+.loading {
+  background-image: linear-gradient(
+    90deg,
+    var(--bg-additive-2x),
+    var(--bg-additive-3x),
+    var(--bg-additive-2x)
+  );
+  background-size: 200% 200%;
+  border-radius: 9999px;
+
+  animation: loadingSkeleton 1s infinite forwards;
+}
+
+@keyframes loadingSkeleton {
+  0% {
+    background-position: -200% 0;
+  }
+  50% {
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

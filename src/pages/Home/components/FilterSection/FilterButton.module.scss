@@ -1,0 +1,32 @@
+@use 'src/styles/abstract/' as *;
+
+.btn {
+  font-size: $text-xl;
+  margin-inline: $size-9;
+  padding-block: $size-10;
+  padding-inline: $size-12;
+
+  border: 1px solid var(--stroke-outline);
+  border-radius: $radius-2xl;
+
+  align-self: center;
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: $size-4;
+  justify-content: center;
+
+  & svg {
+    font-size: $text-3xl;
+  }
+
+  & span {
+    display: none;
+  }
+  @include mq(small) {
+    & span {
+      display: inline-block;
+    }
+  }
+}

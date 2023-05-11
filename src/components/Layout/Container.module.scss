@@ -1,0 +1,14 @@
+@use 'src/styles/abstract/' as *;
+
+.container {
+  max-width: $screen-w-xl;
+  &.marginAuto {
+    margin: auto;
+  }
+  &.marginBlockAuto {
+    margin-block: auto;
+  }
+  &.marginInlineAuto {
+    margin-inline: auto;
+  }
+}

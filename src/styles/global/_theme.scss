@@ -1,0 +1,25 @@
+@use '../abstract/index' as *;
+@use 'theme-palette' as theme;
+
+body {
+  @each $color, $shades in theme.$palette-light {
+    @each $shade, $value in $shades {
+      --#{$color}-#{$shade}: #{$value};
+    }
+  }
+  @each $color, $shades in theme.$palette-colours {
+    @each $shade, $value in $shades {
+      --#{$color}-#{$shade}: #{$value};
+    }
+  }
+}
+
+body {
+  @include dark {
+    @each $color, $shades in theme.$palette-dark {
+      @each $shade, $value in $shades {
+        --#{$color}-#{$shade}: #{$value};
+      }
+    }
+  }
+}

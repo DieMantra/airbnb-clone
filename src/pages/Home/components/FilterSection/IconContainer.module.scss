@@ -1,0 +1,48 @@
+@use 'src/styles/abstract/' as *;
+
+.topLevel {
+  display: flex;
+}
+
+.relative {
+  position: relative;
+  overflow-x: hidden;
+}
+
+.scrollContainer {
+  overflow-x: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.container {
+  display: flex;
+  gap: $size-8;
+
+  align-items: center;
+}
+.carets {
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  transform: translateY(-50%);
+}
+
+.caretLeft {
+  left: 0;
+  padding-right: $size-18;
+
+  background: linear-gradient(90deg, white 40%, transparent);
+}
+.caretRight {
+  right: 0;
+  padding-left: $size-18;
+
+  justify-content: flex-end;
+  background: linear-gradient(-90deg, white 40%, transparent);
+}

@@ -1,0 +1,45 @@
+@use 'sizes' as *;
+@mixin dark {
+  html[data-theme='dark'] & {
+    @content;
+  }
+}
+@mixin dark-hover {
+  html[data-theme='dark'] &:hover {
+    @content;
+  }
+}
+@mixin dark-active {
+  html[data-theme='dark'] &:active {
+    @content;
+  }
+}
+
+/* 
+  DEVICE TARGETING
+*/
+@mixin hover {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+$break-points: (
+  xxxlarge: $screen-w-3xl,
+  xxlarge: $screen-w-2xl,
+  xlarge: $screen-w-xl,
+  large: $screen-w-lg,
+  medium: $screen-w-md,
+  small: $screen-w-sm,
+  xsmall: $screen-w-xsm,
+);
+
+@mixin mq($key) {
+  $size: map-get($break-points, $key);
+
+  @media screen and (min-width: $size) {
+    @content;
+  }
+}
