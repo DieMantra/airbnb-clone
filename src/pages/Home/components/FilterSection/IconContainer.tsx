@@ -72,4 +72,5 @@ function IconContainer({ children, setActiveId }: IconContainerProps) {
     </div>
   );
 }
+
 export default IconContainer;

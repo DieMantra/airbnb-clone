@@ -39,7 +39,31 @@ $break-points: (
 @mixin mq($key) {
   $size: map-get($break-points, $key);
 
-  @media screen and (min-width: $size) {
+  @media screen and (max-width: $size) {
     @content;
+  }
+}
+
+@mixin loadingSkeleton {
+  background-image: linear-gradient(
+    90deg,
+    var(--bg-additive-2x),
+    var(--bg-additive-3x),
+    var(--bg-additive-2x)
+  );
+  background-size: 200% 200%;
+  border-radius: 9999px;
+
+  animation: loadingSkeleton 1s infinite forwards;
+
+  @keyframes loadingSkeleton {
+    0% {
+      background-position: -200% 0;
+    }
+    50% {
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 }

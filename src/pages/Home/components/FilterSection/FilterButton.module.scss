@@ -22,11 +22,11 @@
   }
 
   & span {
-    display: none;
+    display: inline-block;
   }
-  @include mq(small) {
-    & span {
-      display: inline-block;
-    }
+}
+@include mq(small) {
+  .btn {
+    display: none;
   }
 }

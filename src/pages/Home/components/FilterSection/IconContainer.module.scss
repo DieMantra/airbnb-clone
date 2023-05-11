@@ -2,6 +2,7 @@
 
 .topLevel {
   display: flex;
+  position: relative;
 }
 
 .relative {
@@ -11,6 +12,7 @@
 
 .scrollContainer {
   overflow-x: scroll;
+  touch-action: manipulation;
 
   &::-webkit-scrollbar {
     display: none;
@@ -36,13 +38,28 @@
 .caretLeft {
   left: 0;
   padding-right: $size-18;
-
-  background: linear-gradient(90deg, white 40%, transparent);
+  background: linear-gradient(90deg, var(--bg-primary) 40%, transparent);
 }
 .caretRight {
   right: 0;
   padding-left: $size-18;
 
   justify-content: flex-end;
-  background: linear-gradient(-90deg, white 40%, transparent);
+  background: linear-gradient(-90deg, var(--bg-primary) 40%, transparent);
+}
+
+@include mq(small) {
+  .topLevel::after {
+    content: '';
+    position: absolute;
+    bottom: -$size-2;
+    left: 0;
+    width: 100%;
+    height: $size-4;
+    background: linear-gradient(180deg, var(--bg-additive-2x), transparent);
+  }
+
+  .carets {
+    display: none;
+  }
 }
