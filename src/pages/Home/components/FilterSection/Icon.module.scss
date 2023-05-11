@@ -46,6 +46,9 @@
   }
   & span {
     // height: $size-8;
+    &.loading {
+      color: transparent;
+    }
 
     font-size: $text-xl;
     transition: $trans-out;

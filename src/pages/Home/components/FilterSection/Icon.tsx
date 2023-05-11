@@ -15,8 +15,6 @@ function Icon(props: IconProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   const checkImageLoaded = () => {
-    console.log(imgRef.current?.complete);
-
     setIsLoading(!imgRef.current?.complete);
   };
 
