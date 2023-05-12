@@ -1,7 +1,7 @@
 @use '../abstract/index' as *;
 @use 'theme-palette' as theme;
 
-body {
+:root {
   @each $color, $shades in theme.$palette-light {
     @each $shade, $value in $shades {
       --#{$color}-#{$shade}: #{$value};
@@ -14,12 +14,10 @@ body {
   }
 }
 
-body {
-  @include dark {
-    @each $color, $shades in theme.$palette-dark {
-      @each $shade, $value in $shades {
-        --#{$color}-#{$shade}: #{$value};
-      }
+html[data-theme='dark'] {
+  @each $color, $shades in theme.$palette-dark {
+    @each $shade, $value in $shades {
+      --#{$color}-#{$shade}: #{$value};
     }
   }
 }

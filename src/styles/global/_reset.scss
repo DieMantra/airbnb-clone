@@ -21,10 +21,16 @@ html {
 body {
   padding: 0;
   margin: 0;
-  font-family: typo.$font-sans, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  font-family: typo.$font-sans, system-ui, -apple-system, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
   @include typo.text-base;
 
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+}
+
+#root {
   color: var(--text-primary);
   background-color: var(--bg-primary);
 }
@@ -47,7 +53,8 @@ code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo,
+    monospace;
   font-size: 1em;
 }
 
@@ -163,8 +170,8 @@ summary {
 	EXIT MOBILE FIRST DESIGN
 */
 
-@media screen and (min-width: 600px) {
-  html {
-    font-size: 62.5%;
-  }
-}
+// @media screen and (min-width: 600px) {
+//   html {
+//     font-size: 62.5%;
+//   }
+// }
