@@ -18,10 +18,8 @@
   width: 100%;
   max-width: $screen-w-sm;
 
-  padding: $size-12;
-
   background-color: var(--bg-primary);
-  border: 2px solid var(--stroke-outline);
+  border: 1px solid var(--stroke-outline);
   border-radius: $radius-3xl;
 
   display: flex;

@@ -1,29 +1,17 @@
-import { AnimatePresence } from 'framer-motion';
-import { ReactNode } from 'react';
-import ReactDOM from 'react-dom';
-import Modal from './Modal';
+import Modal from '../../../../components/Modal/Index';
 
-interface ModalProps {
-  children?: ReactNode;
-  isOpen: boolean;
-  setIsOpen: (e: boolean) => void;
+interface IndexProps {
+  modalIsOpen: boolean;
+  setModalIsOpen: (e: boolean) => void;
 }
 
-function Index({ children, isOpen, setIsOpen }: ModalProps) {
-  const ModalNode = document.getElementById('modal') as HTMLElement;
-
+function Index({ modalIsOpen, setModalIsOpen }: IndexProps) {
   return (
     <>
-      {ReactDOM.createPortal(
-        <AnimatePresence mode="wait">
-          {isOpen && (
-            <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-              {children}
-            </Modal>
-          )}
-        </AnimatePresence>,
-        ModalNode,
-      )}
+      <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
+        Modal
+        <button onClick={setModalIsOpen.bind(null, false)}>close</button>
+      </Modal>
     </>
   );
 }

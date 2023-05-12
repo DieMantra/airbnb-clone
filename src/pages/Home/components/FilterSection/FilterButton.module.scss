@@ -8,6 +8,7 @@
 
   border: 1px solid var(--stroke-outline);
   border-radius: $radius-2xl;
+  background-color: var(--bg-primary);
 
   align-self: center;
 
@@ -25,8 +26,13 @@
     display: inline-block;
   }
 }
+
 @include mq(small) {
   .btn {
-    display: none;
+    // flex: 1 0 100%;
+
+    & span {
+      display: none;
+    }
   }
 }

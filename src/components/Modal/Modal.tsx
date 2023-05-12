@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import isMobileDevice from '../../../../utils/DetectMobile';
+import isMobileDevice from '../../utils/DetectMobile';
 import styles from './Modal.module.scss';
 
 interface ModalProps {
@@ -56,7 +56,6 @@ function Modal({ children, setIsOpen }: ModalProps) {
           }}
           onAnimationStart={(variant) => {
             if (variant === 'open' && isMobile) {
-              console.log('open');
               setStyle(html, {
                 transition: 'none',
                 backgroundColor: 'var(--bg-additive-5x)',
@@ -71,7 +70,6 @@ function Modal({ children, setIsOpen }: ModalProps) {
               });
             }
             if (variant !== 'open' && isMobile) {
-              console.log('on way out');
               reset(html);
               reset(root, ['transform']);
               reset(root, ['borderTopLeftRadius', 'borderTopRightRadius']);
@@ -79,7 +77,6 @@ function Modal({ children, setIsOpen }: ModalProps) {
           }}
           onAnimationComplete={(variant) => {
             if (variant === 'closed' && isMobile) {
-              console.log('closed');
               reset(html);
               reset(root);
             }

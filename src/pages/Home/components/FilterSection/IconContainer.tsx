@@ -3,12 +3,20 @@ import { RadioGroup } from 'react-aria-components';
 import CaretButton from '../../../../components/CaretButton';
 import FilterButton from './FilterButton';
 import styles from './IconContainer.module.scss';
+
 interface IconContainerProps {
   children: React.ReactNode;
   setActiveId: (e: string) => void;
+  modalIsOpen: boolean;
+  setModalIsOpen: (e: boolean) => void;
 }
 
-function IconContainer({ children, setActiveId }: IconContainerProps) {
+function IconContainer({
+  children,
+  setActiveId,
+  modalIsOpen,
+  setModalIsOpen,
+}: IconContainerProps) {
   const [isLeft, setIsLeft] = useState(true);
   const [isRight, setIsRight] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -68,7 +76,7 @@ function IconContainer({ children, setActiveId }: IconContainerProps) {
           </RadioGroup>
         </div>
       </div>
-      <FilterButton />
+      <FilterButton modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
     </div>
   );
 }

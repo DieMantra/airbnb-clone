@@ -7,6 +7,7 @@ function AppButton(props: AriaButtonProps) {
   const { buttonProps } = useButton(props, ref);
   const { toggleTheme } = useTheme();
   toggleTheme('light');
+
   return (
     <button {...buttonProps} ref={ref}>
       {props.children}
