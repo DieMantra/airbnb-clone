@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useDragControls } from 'framer-motion';
+import { PointerEvent, useRef } from 'react';
 import isMobileDevice from '../../utils/DetectMobile';
 import styles from './Modal.module.scss';
 
@@ -11,8 +12,22 @@ interface ModalProps {
 function Modal({ children, setIsOpen }: ModalProps) {
   const html = document.documentElement;
   const root = document.getElementById('root') as HTMLDivElement;
-  // const Body = document.querySelector('body') as HTMLBodyElement;
+  const dragRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
+  const dragControls = useDragControls();
+
+  function startDrag(event: PointerEvent<HTMLDivElement>) {
+    dragControls.start(event, { snapToCursor: false });
+  }
+  function stopDrag(event: PointerEvent<HTMLDivElement>) {
+    if (
+      dragRef.current?.clientHeight &&
+      event.clientY > dragRef.current?.clientHeight - 100
+    ) {
+      setIsOpen(false);
+    }
+  }
+
   const overlayVariants = {
     closed: {
       opacity: 0,
@@ -21,7 +36,6 @@ function Modal({ children, setIsOpen }: ModalProps) {
       opacity: 1,
     },
   };
-
   const modalVariants = {
     closed: {
       y: '100vh',
@@ -44,12 +58,18 @@ function Modal({ children, setIsOpen }: ModalProps) {
         transition={{ duration: 0.1 }}
       >
         <motion.div
+          ref={dragRef}
+          drag="y"
+          onPointerDown={startDrag}
+          onPointerUp={stopDrag}
+          dragControls={dragControls}
+          dragSnapToOrigin
           className={styles.container}
           variants={modalVariants}
           initial="closed"
           animate="open"
           exit="closed"
-          transition={{ duration: 0.2, ease: 'easeInOut' }}
+          transition={{ duration: 0.35, ease: 'easeInOut' }}
           onAnimationStart={(variant) => {
             if (variant === 'open' && isMobile) {
               setStyle(html, {
@@ -57,7 +77,7 @@ function Modal({ children, setIsOpen }: ModalProps) {
                 backgroundColor: 'var(--bg-additive-5x)',
               });
               setStyle(root, {
-                transition: 'transform 0.1s ease',
+                transition: 'transform 0.3s ease-in-out',
                 transform: 'translateY(1%) scale(0.95)',
                 minHeight: '100vh',
                 borderTopLeftRadius: '1.5rem',
