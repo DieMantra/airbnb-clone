@@ -49,11 +49,7 @@ function Modal({ children, setIsOpen }: ModalProps) {
           initial="closed"
           animate="open"
           exit="closed"
-          transition={{
-            type: 'spring',
-            damping: 27,
-            stiffness: 190,
-          }}
+          transition={{ duration: 0.2, ease: 'easeInOut' }}
           onAnimationStart={(variant) => {
             if (variant === 'open' && isMobile) {
               setStyle(html, {
@@ -62,7 +58,7 @@ function Modal({ children, setIsOpen }: ModalProps) {
               });
               setStyle(root, {
                 transition: 'transform 0.1s ease',
-                transform: 'translateY(1vh) scale(0.95)',
+                transform: 'translateY(1%) scale(0.95)',
                 minHeight: '100vh',
                 borderTopLeftRadius: '1.5rem',
                 borderTopRightRadius: '1.5rem',

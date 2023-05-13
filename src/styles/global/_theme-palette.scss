@@ -7,6 +7,7 @@ $palette-light: (
   ),
   bg: (
     primary: rgb(255, 255, 255),
+    secondary: rgb(241, 242, 242),
     inverted: rgb(15, 15, 15),
     additive: rgba(0, 0, 0, 0.05),
     additive-2x: rgba(0, 0, 0, 0.1),
@@ -41,6 +42,7 @@ $palette-dark: (
   ),
   bg: (
     primary: rgb(15, 15, 15),
+    secondary: rgb(22, 22, 28),
     inverted: rgb(255, 255, 255),
     additive: rgba(255, 255, 255, 0.05),
     additive-2x: rgba(255, 255, 255, 0.1),
