@@ -11,6 +11,25 @@
   justify-content: center;
 }
 
+.dragBar {
+  position: absolute;
+  top: -$size-16;
+  left: 50%;
+  transform: translateX(-50%);
+
+  margin: $size-10;
+  width: 50%;
+  height: $size-6;
+
+  backdrop-filter: blur(50px);
+  filter: invert(0.5);
+
+  border-radius: $radius-full;
+  box-shadow: $box-shadow-md;
+
+  touch-action: none;
+}
+
 .container {
   position: fixed;
   z-index: 2000;
@@ -31,7 +50,7 @@
 
   @include mq(medium) {
     bottom: 0;
-    height: 94%;
+    height: 92%;
     max-width: 100%;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
