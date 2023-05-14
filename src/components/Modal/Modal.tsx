@@ -13,7 +13,7 @@ let startHeight = 0;
 function Modal({ children, setIsOpen }: ModalProps) {
   const html = document.documentElement;
   const root = document.getElementById('root') as HTMLDivElement;
-  const dragRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
   const MODAL_HEIGHT = 92;
 
@@ -22,7 +22,7 @@ function Modal({ children, setIsOpen }: ModalProps) {
   let closeFromDraggin = false;
 
   useEffect(() => {
-    startHeight = dragRef.current?.clientHeight || 0;
+    startHeight = modalRef.current?.clientHeight || 0;
   }, []);
 
   function handleDragStart(event: PointerEvent<HTMLDivElement>) {
@@ -31,14 +31,18 @@ function Modal({ children, setIsOpen }: ModalProps) {
 
   function handleDragging(event: PointerEvent<HTMLDivElement>) {
     distranceY = Math.round(event.clientY - startY);
-    if (distranceY > 0 && dragRef.current) {
+    if (distranceY > 0 && modalRef.current) {
       const newHeightInPixels = startHeight - distranceY;
       const oldHeightInPixels = startHeight;
 
       const percentageChanged =
         ((newHeightInPixels - oldHeightInPixels) / oldHeightInPixels) * 100;
       const newHeightInPercentage = MODAL_HEIGHT + percentageChanged;
-      dragRef.current.style.height = `${newHeightInPercentage}%`;
+
+      const newModalOpacity = (percentageChanged + 100) / 100;
+
+      modalRef.current.style.height = `${newHeightInPercentage}%`;
+      modalRef.current.style.opacity = `${newModalOpacity.toFixed(2)}`;
 
       const newRootTranslateY = Math.round((percentageChanged + 100) / 10);
 
@@ -51,6 +55,7 @@ function Modal({ children, setIsOpen }: ModalProps) {
       });
       if (percentageChanged + 100 < 50) {
         closeFromDraggin = true;
+        modalRef.current.style.opacity = `${newHeightInPercentage}%`;
       } else {
         closeFromDraggin = false;
       }
@@ -61,7 +66,8 @@ function Modal({ children, setIsOpen }: ModalProps) {
     if (closeFromDraggin) {
       setIsOpen(false);
     } else {
-      dragRef.current?.style.removeProperty('height');
+      modalRef.current?.style.removeProperty('height');
+      modalRef.current?.style.removeProperty('opacity');
       setHtmlStyle();
       setRootStyles();
     }
@@ -77,10 +83,12 @@ function Modal({ children, setIsOpen }: ModalProps) {
   };
   const modalVariants = {
     closed: {
-      y: '100vh',
+      y: '100%',
+      opacity: 0.5,
     },
     open: {
       y: 0,
+      opacity: 1,
     },
   };
 
@@ -97,17 +105,17 @@ function Modal({ children, setIsOpen }: ModalProps) {
         transition={{ duration: 0.1 }}
       >
         <motion.div
-          ref={dragRef}
+          ref={modalRef}
           className={styles.container}
           variants={modalVariants}
           initial="closed"
           animate="open"
           exit="closed"
-          style={{
-            transition: 'height 0.2s linear',
-            height: `${MODAL_HEIGHT}%`,
-          }}
-          transition={{ duration: 0.25, ease: 'linear' }}
+          // style={{
+          //   transition: 'height 0.2s linear',
+          //   height: `${MODAL_HEIGHT}%`,
+          // }}
+          transition={{ duration: 0.2, ease: 'linear' }}
           onAnimationStart={(variant) => {
             if (variant === 'open' && isMobile) {
               setHtmlStyle();

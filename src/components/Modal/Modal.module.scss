@@ -22,7 +22,8 @@
   height: $size-6;
 
   backdrop-filter: blur(50px);
-  filter: invert(0.5);
+  filter: invert(1);
+  background-color: var(--bg-additive-2x);
 
   border-radius: $radius-full;
   box-shadow: $box-shadow-md;
@@ -38,7 +39,7 @@
   max-width: $screen-w-sm;
 
   background-color: var(--bg-secondary);
-  border: 1px solid var(--stroke-outline);
+  // border: 1px solid var(--stroke-outline);
   border-radius: $radius-3xl;
 
   display: flex;
