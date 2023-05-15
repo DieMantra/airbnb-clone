@@ -9,13 +9,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  &.closing {
-    animation: animateOverlay 200ms ease-in-out forwards reverse;
-  }
-  &.opening {
-    animation: animateOverlay 200ms ease-in-out forwards;
-  }
 }
 
 .dragBar {
@@ -71,27 +64,5 @@
     max-width: 100%;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-  }
-
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-
-  &.closing {
-    animation: animateModal 200ms ease-in-out;
-    animation-direction: reverse;
-  }
-  &.opening {
-    animation: animateModal 200ms ease-in-out forwards;
-  }
-}
-
-@keyframes animateModal {
-  from {
-    transform: translateY(100%) translate3d(0, 0, 0);
-  }
-}
-@keyframes animateOverlay {
-  from {
-    opacity: 0;
   }
 }

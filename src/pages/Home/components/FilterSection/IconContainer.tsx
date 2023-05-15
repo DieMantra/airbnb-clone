@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { RadioGroup } from 'react-aria-components';
 import CaretButton from '../../../../components/CaretButton';
 import FilterButton from './FilterButton';
@@ -8,7 +8,7 @@ interface IconContainerProps {
   children: React.ReactNode;
   setActiveId: (e: string) => void;
   modalIsOpen: boolean;
-  setModalIsOpen: (e: boolean) => void;
+  setModalIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 function IconContainer({

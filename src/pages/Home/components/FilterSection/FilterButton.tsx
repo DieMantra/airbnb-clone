@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { Dispatch, SetStateAction, useRef } from 'react';
 import { useButton } from 'react-aria';
 import { CiSliderHorizontal } from 'react-icons/ci';
 import Modal from '../FilterModal/Index';
@@ -6,7 +6,7 @@ import styles from './FilterButton.module.scss';
 
 interface FilterButtonProps {
   modalIsOpen: boolean;
-  setModalIsOpen: (e: boolean) => void;
+  setModalIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 function FilterButton({ modalIsOpen, setModalIsOpen }: FilterButtonProps) {
