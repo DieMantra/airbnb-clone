@@ -13,22 +13,32 @@
 
 .dragBar {
   position: absolute;
-  top: -$size-16;
+  top: -$size-5;
   left: 50%;
   transform: translateX(-50%);
 
-  margin: $size-10;
+  padding: $size-14;
   width: 50%;
   height: $size-6;
 
-  backdrop-filter: blur(50px);
-  filter: invert(1);
-  background-color: var(--bg-additive-2x);
-
-  border-radius: $radius-full;
-  box-shadow: $box-shadow-md;
-
   touch-action: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    height: $size-8;
+    width: 100%;
+    border-radius: $radius-full;
+
+    backdrop-filter: invert(0.5) blur(50px);
+    box-shadow: $box-shadow-md;
+
+    touch-action: none;
+  }
 }
 
 .container {
@@ -39,7 +49,6 @@
   max-width: $screen-w-sm;
 
   background-color: var(--bg-secondary);
-  // border: 1px solid var(--stroke-outline);
   border-radius: $radius-3xl;
 
   display: flex;

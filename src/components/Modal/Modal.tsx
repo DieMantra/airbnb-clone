@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { PointerEvent, useEffect, useRef } from 'react';
+import { PointerEvent, RefObject, useEffect, useRef } from 'react';
 import isMobileDevice from '../../utils/DetectMobile';
 import styles from './Modal.module.scss';
 
@@ -11,11 +11,10 @@ interface ModalProps {
 let startHeight = 0;
 
 function Modal({ children, setIsOpen }: ModalProps) {
-  const html = document.documentElement;
   const root = document.getElementById('root') as HTMLDivElement;
   const modalRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
-  const MODAL_HEIGHT = 92;
+  const TRANSITION_TIME = 0.1;
 
   let startY = 0;
   let distranceY = 0;
@@ -31,17 +30,17 @@ function Modal({ children, setIsOpen }: ModalProps) {
 
   function handleDragging(event: PointerEvent<HTMLDivElement>) {
     distranceY = Math.round(event.clientY - startY);
+
     if (distranceY > 0 && modalRef.current) {
       const newHeightInPixels = startHeight - distranceY;
       const oldHeightInPixels = startHeight;
 
       const percentageChanged =
         ((newHeightInPixels - oldHeightInPixels) / oldHeightInPixels) * 100;
-      const newHeightInPercentage = MODAL_HEIGHT + percentageChanged;
 
       const newModalOpacity = (percentageChanged + 100) / 100;
 
-      modalRef.current.style.height = `${newHeightInPercentage}%`;
+      modalRef.current.style.transform = `translateY(${distranceY}px)`;
       modalRef.current.style.opacity = `${newModalOpacity.toFixed(2)}`;
 
       const newRootTranslateY = Math.round((percentageChanged + 100) / 10);
@@ -54,23 +53,59 @@ function Modal({ children, setIsOpen }: ModalProps) {
         transform: `translateY(${newRootTranslateY}px) scale(${newRootScaleAmout})`,
       });
       if (percentageChanged + 100 < 50) {
+        if (!closeFromDraggin) {
+          handleTimeoutTransitionTransform({
+            elementRef: modalRef,
+            time: TRANSITION_TIME,
+            multiplier: 2000,
+          });
+        }
         closeFromDraggin = true;
-        modalRef.current.style.opacity = `${newHeightInPercentage}%`;
+        modalRef.current.style.transform = `translateY(${distranceY + 100}px)`;
       } else {
+        if (closeFromDraggin) {
+          handleTimeoutTransitionTransform({
+            elementRef: modalRef,
+            time: TRANSITION_TIME,
+            multiplier: 2000,
+          });
+        }
         closeFromDraggin = false;
       }
     }
   }
 
   function handleDragEnd() {
+    if (!modalRef.current) return;
     if (closeFromDraggin) {
       setIsOpen(false);
     } else {
-      modalRef.current?.style.removeProperty('height');
-      modalRef.current?.style.removeProperty('opacity');
-      setHtmlStyle();
+      modalRef.current.style.removeProperty('transform');
+      modalRef.current.style.removeProperty('opacity');
+      handleTimeoutTransitionTransform({
+        elementRef: modalRef,
+        time: TRANSITION_TIME,
+        multiplier: 2000,
+      });
       setRootStyles();
     }
+  }
+
+  function handleTimeoutTransitionTransform({
+    time,
+    multiplier,
+    elementRef,
+  }: {
+    elementRef: RefObject<HTMLElement>;
+    time: number;
+    multiplier: number;
+  }) {
+    if (!elementRef.current) return;
+    elementRef.current.style.transition = `transform ${time}s linear`;
+    setTimeout(() => {
+      if (!elementRef.current) return;
+      elementRef.current.style.removeProperty('transition');
+    }, time * multiplier);
   }
 
   const overlayVariants = {
@@ -111,25 +146,27 @@ function Modal({ children, setIsOpen }: ModalProps) {
           initial="closed"
           animate="open"
           exit="closed"
-          // style={{
-          //   transition: 'height 0.2s linear',
-          //   height: `${MODAL_HEIGHT}%`,
-          // }}
-          transition={{ duration: 0.2, ease: 'linear' }}
+          transition={{ duration: 0.1, ease: 'linear' }}
           onAnimationStart={(variant) => {
             if (variant === 'open' && isMobile) {
-              setHtmlStyle();
               setRootStyles();
+              setStyle(document.body, {
+                backgroundColor: 'var(--bg-additive-5x)',
+                overflowY: 'hidden',
+              });
             } else {
-              reset(html);
-              reset(root, ['transform']);
-              reset(root, ['borderTopLeftRadius', 'borderTopRightRadius']);
+              reset(document.body, ['backgroundColor', 'overflowY']);
+              reset(root, [
+                'transform',
+                'borderTopLeftRadius',
+                'borderTopRightRadius',
+              ]);
             }
           }}
           onAnimationComplete={(variant) => {
             if (variant === 'closed' && isMobile) {
-              reset(html);
               reset(root);
+              reset(document.body, ['backgroundColor', 'overflowY']);
               root.attributes.removeNamedItem('style');
             }
           }}
@@ -148,19 +185,11 @@ function Modal({ children, setIsOpen }: ModalProps) {
 }
 export default Modal;
 
-function setHtmlStyle(styles?: Styles) {
-  const html = document.documentElement;
-
-  setStyle(html, {
-    transition: 'none',
-    backgroundColor: 'var(--bg-additive-5x)',
-    ...styles,
-  });
-}
 function setRootStyles(styles?: Styles) {
   const root = document.getElementById('root') as HTMLDivElement;
 
   setStyle(root, {
+    overflowY: 'hidden',
     transition: 'transform 0.1s linear',
     transform: 'translateY(10px) scale(0.95)',
     minHeight: '100vh',

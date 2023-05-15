@@ -33,6 +33,7 @@ body {
 #root {
   color: var(--text-primary);
   background-color: var(--bg-primary);
+  min-height: 100vh;
 }
 
 hr {
