@@ -28,7 +28,7 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
   const root = document.getElementById('root') as HTMLDivElement;
   const modalRef = useRef<HTMLDivElement>(null);
   // const isMobile = isMobileDevice();
-  const TRANSITION_TIME = 200;
+  const TRANSITION_TIME = 50;
   const TRANSITION_TIME_IN_OUT = 500;
 
   let startY = 0;
@@ -176,7 +176,7 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
     time: number;
   }) {
     if (!elementRef.current) return;
-    elementRef.current.style.transition = `transform ${time}ms ease-out`;
+    elementRef.current.style.transition = `transform ${time}ms ease-in-out`;
     setTimeout(() => {
       if (!elementRef.current) return;
       elementRef.current.style.removeProperty('transition');
