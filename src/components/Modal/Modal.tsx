@@ -1,8 +1,8 @@
 import {
   Dispatch,
-  PointerEvent,
   RefObject,
   SetStateAction,
+  TouchEvent,
   useCallback,
   useEffect,
   useRef,
@@ -104,12 +104,15 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
   }, [isOpen, handleTriggerModalState, root, body]);
 
   // DRAG EVENT HANDLERS
-  function handleDragStart(event: PointerEvent<HTMLDivElement>) {
-    startY = event.clientY;
+  function handleDragStart(event: TouchEvent<HTMLSpanElement>) {
+    console.log(event.targetTouches[0].clientY);
+    event;
+    startY = event.targetTouches[0].clientY;
+    // startY = event.clientY;
   }
 
-  function handleDragging(event: PointerEvent<HTMLDivElement>) {
-    distanceY = Math.round(event.clientY - startY);
+  function handleDragging(event: TouchEvent<HTMLSpanElement>) {
+    distanceY = Math.round(event.targetTouches[0].clientY - startY);
 
     if (distanceY > 0 && modalRef.current) {
       const percentageChanged =
@@ -129,6 +132,7 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
         borderTopLeftRadius: `${percentageChanged / 100 + 0.5}rem`,
         borderTopRightRadius: `${percentageChanged / 100 + 0.5}rem`,
       });
+      console.log(percentageChanged < 50);
 
       if (percentageChanged < 50) {
         if (!closeFromDraggin) {
@@ -196,9 +200,12 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
           className={`${styles.container} ${styles[currentTransition]}`}
         >
           <span
-            onPointerDown={handleDragStart}
-            onPointerUp={handleDragEnd}
-            onPointerMove={handleDragging}
+            onTouchStart={handleDragStart}
+            onTouchEnd={handleDragEnd}
+            onTouchMove={handleDragging}
+            // onPointerDown={handleDragStart}
+            // onPointerUp={handleDragEnd}
+            // onPointerMove={handleDragging}
             className={styles.dragBar}
           />
           {children}
