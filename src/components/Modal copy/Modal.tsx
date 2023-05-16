@@ -23,7 +23,7 @@ interface ModalProps {
 }
 let startHeight = 0;
 
-function Modal({ children, setIsOpen, triggerModalStateTimer }: ModalProps) {
+function Modal({ children, setIsOpen }: ModalProps) {
   const root = document.getElementById('root') as HTMLDivElement;
   const modalRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
