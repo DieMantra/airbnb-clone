@@ -1,6 +1,5 @@
 import {
   Dispatch,
-  RefObject,
   SetStateAction,
   TouchEvent,
   useCallback,
@@ -8,28 +7,32 @@ import {
   useRef,
   useState,
 } from 'react';
-// import isMobileDevice from '../../utils/DetectMobile';
 import ReactDOM from 'react-dom';
+import isMobileDevice from '../../utils/DetectMobile';
 import styles from './Modal.module.scss';
 
 interface ModalProps {
   children?: React.ReactNode;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  dragToClose?: boolean;
 }
 
-function Modal({ children, isOpen, setIsOpen }: ModalProps) {
-  const [modalState, setModalState] = useState<boolean>();
+function Modal({
+  children,
+  isOpen,
+  setIsOpen,
+  dragToClose = true,
+}: ModalProps) {
+  // const [modalState, setModalState] = useState<boolean>();
   const [currentTransition, setCurrentTransition] = useState<
     'closing' | 'opening' | 'closed' | 'opened'
   >('closed');
-  const ModalNode = document.getElementById('modal') as HTMLElement;
-  const body = document.body;
   const root = document.getElementById('root') as HTMLDivElement;
   const modalRef = useRef<HTMLDivElement>(null);
-  // const isMobile = isMobileDevice();
-  const TRANSITION_TIME = 50;
-  const TRANSITION_TIME_IN_OUT = 500;
+  const isMobile = isMobileDevice();
+
+  const TRANSITION_TIME_IN_OUT = 300;
 
   let startY = 0;
   let distanceY = 0;
@@ -51,7 +54,8 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
       let timer: number;
 
       if (newState) {
-        setModalState(newState);
+        // setCurrentTransition('opening');
+        // setModalState(newState);
         timer = setTimeout(() => {
           cleanUp && cleanUp();
           setCurrentTransition('opened');
@@ -59,14 +63,14 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
       } else {
         timer = setTimeout(() => {
           cleanUp && cleanUp();
-          setModalState(newState);
-          setCurrentTransition('closed');
+          // setModalState(newState);
+          // setCurrentTransition('closed');
         }, transitionTime);
       }
 
       return timer;
     },
-    [setModalState],
+    [],
   );
 
   // CONDENSE THE HANDLETRIGGERMODALSTATE FUNCTION INTO THE USEEFFECT...
@@ -78,7 +82,7 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
         if (isOpen) {
           setCurrentTransition('opening');
           setRootStyles();
-          setStyle(body, {
+          setStyle(document.body, {
             overflowY: 'hidden',
             backgroundColor: 'var(--bg-inverted)',
           });
@@ -98,17 +102,18 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
       },
       cleanUp: () => {
         !isOpen && root.style.removeProperty('transition');
+        !isOpen && setCurrentTransition('closed');
+        isOpen && setCurrentTransition('opened');
       },
     });
+
     return () => clearTimeout(timer);
-  }, [isOpen, handleTriggerModalState, root, body]);
+  }, [isOpen, handleTriggerModalState, root]);
 
   // DRAG EVENT HANDLERS
+
   function handleDragStart(event: TouchEvent<HTMLSpanElement>) {
-    console.log(event.targetTouches[0].clientY);
-    event;
     startY = event.targetTouches[0].clientY;
-    // startY = event.clientY;
   }
 
   function handleDragging(event: TouchEvent<HTMLSpanElement>) {
@@ -132,28 +137,13 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
         borderTopLeftRadius: `${percentageChanged / 100 + 0.5}rem`,
         borderTopRightRadius: `${percentageChanged / 100 + 0.5}rem`,
       });
-      console.log(percentageChanged < 50);
 
       if (percentageChanged < 50) {
-        if (!closeFromDraggin) {
-          // handleTimeoutTransitionTransform({
-          //   elementRef: modalRef,
-          //   time: TRANSITION_TIME,
-          // });
-        }
-        closeFromDraggin = true;
         modalRef.current.style.transform = `translate(-50%, 90%)`;
         modalRef.current.style.opacity = `0.5`;
+        closeFromDraggin = true;
       } else {
-        if (closeFromDraggin) {
-          // modalRef.current.style.removeProperty('transition');
-
-          modalRef.current.style.opacity = `1`;
-          // handleTimeoutTransitionTransform({
-          //   elementRef: modalRef,
-          //   time: TRANSITION_TIME,
-          // });
-        }
+        modalRef.current.style.opacity = `1`;
         closeFromDraggin = false;
       }
     }
@@ -166,31 +156,13 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
     } else {
       modalRef.current.style.removeProperty('transform');
       modalRef.current.style.removeProperty('opacity');
-      handleTimeoutTransitionTransform({
-        elementRef: modalRef,
-        time: TRANSITION_TIME,
-      });
+
       setRootStyles();
     }
   }
 
-  function handleTimeoutTransitionTransform({
-    time,
-    elementRef,
-  }: {
-    elementRef: RefObject<HTMLElement>;
-    time: number;
-  }) {
-    if (!elementRef.current) return;
-    elementRef.current.style.transition = `transform ${time}ms ease-in-out`;
-    setTimeout(() => {
-      if (!elementRef.current) return;
-      elementRef.current.style.removeProperty('transition');
-    }, time + 50);
-  }
-
   return ReactDOM.createPortal(
-    modalState ? (
+    currentTransition !== 'closed' ? (
       <>
         <div
           onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}
@@ -201,20 +173,19 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
           ref={modalRef}
           className={`${styles.container} ${styles[currentTransition]}`}
         >
-          <span
-            onTouchStart={handleDragStart}
-            onTouchEnd={handleDragEnd}
-            onTouchMove={handleDragging}
-            // onPointerDown={handleDragStart}
-            // onPointerUp={handleDragEnd}
-            // onPointerMove={handleDragging}
-            className={styles.dragBar}
-          />
+          {dragToClose && isMobile && (
+            <span
+              onTouchStart={handleDragStart}
+              onTouchEnd={handleDragEnd}
+              onTouchMove={handleDragging}
+              className={styles.dragBar}
+            />
+          )}
           {children}
         </div>
       </>
     ) : null,
-    ModalNode,
+    document.getElementById('modal') as HTMLDivElement,
   );
 }
 export default Modal;
