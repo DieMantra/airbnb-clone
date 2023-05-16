@@ -136,21 +136,23 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
 
       if (percentageChanged < 50) {
         if (!closeFromDraggin) {
-          handleTimeoutTransitionTransform({
-            elementRef: modalRef,
-            time: TRANSITION_TIME,
-          });
+          // handleTimeoutTransitionTransform({
+          //   elementRef: modalRef,
+          //   time: TRANSITION_TIME,
+          // });
         }
         closeFromDraggin = true;
         modalRef.current.style.transform = `translate(-50%, 90%)`;
         modalRef.current.style.opacity = `0.5`;
       } else {
         if (closeFromDraggin) {
+          // modalRef.current.style.removeProperty('transition');
+
           modalRef.current.style.opacity = `1`;
-          handleTimeoutTransitionTransform({
-            elementRef: modalRef,
-            time: TRANSITION_TIME,
-          });
+          // handleTimeoutTransitionTransform({
+          //   elementRef: modalRef,
+          //   time: TRANSITION_TIME,
+          // });
         }
         closeFromDraggin = false;
       }
