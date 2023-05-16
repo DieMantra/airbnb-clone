@@ -77,26 +77,27 @@
   }
 
   will-change: transform;
-  --transition-speed: 300ms;
+  --transition-speed: 400ms;
+  --transition-timing: cubic-bezier(0.01, 0, 0.78, 0.25);
 
   &.closing {
     animation: animateModalDesktop var(--transition-speed)
-      cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      var(--transition-timing) forwards;
     animation-direction: reverse;
 
     @include mq(medium) {
       animation: animateModalMobile var(--transition-speed)
-        cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        var(--transition-timing) forwards;
       animation-direction: reverse;
     }
   }
   &.opening {
     animation: animateModalDesktop var(--transition-speed)
-      cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      var(--transition-timing) forwards;
 
     @include mq(medium) {
       animation: animateModalMobile var(--transition-speed)
-        cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        var(--transition-timing) forwards;
     }
   }
 }

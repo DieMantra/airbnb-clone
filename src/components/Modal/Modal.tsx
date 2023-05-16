@@ -2,7 +2,6 @@ import {
   Dispatch,
   SetStateAction,
   TouchEvent,
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -24,7 +23,6 @@ function Modal({
   setIsOpen,
   dragToClose = true,
 }: ModalProps) {
-  // const [modalState, setModalState] = useState<boolean>();
   const [currentTransition, setCurrentTransition] = useState<
     'closing' | 'opening' | 'closed' | 'opened'
   >('closed');
@@ -32,86 +30,65 @@ function Modal({
   const modalRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
 
-  const TRANSITION_TIME_IN_OUT = 300;
+  const TRANSITION_TIME_IN_OUT = 400;
 
   let startY = 0;
   let distanceY = 0;
   let closeFromDraggin = false;
 
-  const handleTriggerModalState = useCallback(
-    ({
-      newState,
-      transitionTime,
-      callback,
-      cleanUp,
-    }: {
-      newState: boolean;
-      transitionTime: number;
-      callback: () => void;
-      cleanUp?: () => void;
-    }): number => {
-      callback && callback();
-      let timer: number;
-
-      if (newState) {
-        // setCurrentTransition('opening');
-        // setModalState(newState);
-        timer = setTimeout(() => {
-          cleanUp && cleanUp();
-          setCurrentTransition('opened');
-        }, transitionTime);
-      } else {
-        timer = setTimeout(() => {
-          cleanUp && cleanUp();
-          // setModalState(newState);
-          // setCurrentTransition('closed');
-        }, transitionTime);
-      }
-
-      return timer;
-    },
-    [],
-  );
-
-  // CONDENSE THE HANDLETRIGGERMODALSTATE FUNCTION INTO THE USEEFFECT...
   useEffect(() => {
-    const timer = handleTriggerModalState({
-      newState: isOpen,
-      transitionTime: TRANSITION_TIME_IN_OUT,
-      callback: () => {
-        if (isOpen) {
-          setCurrentTransition('opening');
-          setRootStyles();
-          setStyle(document.body, {
-            overflowY: 'hidden',
-            backgroundColor: 'var(--bg-inverted)',
-          });
-        } else {
-          setCurrentTransition('closing');
-          [
-            'overflow-y',
-            'transform',
-            'min-height',
-            'border-top-left-radius',
-            'border-top-right-radius',
-            'box-shadow',
-          ].forEach((str) => {
-            root.style.removeProperty(str);
-          });
-        }
-      },
-      cleanUp: () => {
-        !isOpen && root.style.removeProperty('transition');
-        !isOpen && setCurrentTransition('closed');
-        isOpen && setCurrentTransition('opened');
-      },
-    });
+    setCurrentTransition('closed');
+  }, []);
+
+  useEffect(() => {
+    let timer: number;
+
+    if (isOpen) {
+      setCurrentTransition('opening');
+      setRootStyles();
+      setStyle(document.body, {
+        overflowY: 'hidden',
+        backgroundColor: 'var(--bg-inverted)',
+      });
+
+      // CLEAN UP
+      timer = setTimeout(() => {
+        setCurrentTransition('opened');
+      }, TRANSITION_TIME_IN_OUT);
+      // ELSE RUN WHEN CLOSING
+    } else {
+      setCurrentTransition('closing');
+
+      [
+        'overflow-y',
+        'transform',
+        'min-height',
+        'border-top-left-radius',
+        'border-top-right-radius',
+        'box-shadow',
+      ].forEach((str) => {
+        (
+          document.getElementById('root') as HTMLDivElement
+        ).style.removeProperty(str);
+      });
+
+      // CLEAN UP
+      timer = setTimeout(() => {
+        (
+          document.getElementById('root') as HTMLDivElement
+        ).style.removeProperty('transition');
+        setCurrentTransition('closed');
+      }, TRANSITION_TIME_IN_OUT);
+    }
 
     return () => clearTimeout(timer);
-  }, [isOpen, handleTriggerModalState, root]);
+  }, [isOpen]);
+
+  useEffect(() => {
+    setCurrentTransition('closed');
+  }, []);
 
   // DRAG EVENT HANDLERS
-
   function handleDragStart(event: TouchEvent<HTMLSpanElement>) {
     startY = event.targetTouches[0].clientY;
   }
