@@ -15,6 +15,7 @@ interface ModalProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   dragToClose?: boolean;
+  rootContentId?: string;
 }
 
 function Modal({
@@ -22,11 +23,12 @@ function Modal({
   isOpen,
   setIsOpen,
   dragToClose = true,
+  rootContentId = 'root',
 }: ModalProps) {
   const [currentTransition, setCurrentTransition] = useState<
     'closing' | 'opening' | 'closed' | 'opened'
   >('closed');
-  const root = document.getElementById('root') as HTMLDivElement;
+  const root = document.getElementById(rootContentId) as HTMLDivElement;
   const modalRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
 

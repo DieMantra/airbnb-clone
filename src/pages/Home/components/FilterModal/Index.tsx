@@ -20,8 +20,9 @@ function Index({ modalIsOpen, setModalIsOpen }: IndexProps) {
 
   const inputs = {
     width: '100%',
-    borderRadius: '0px',
+    borderRadius: '5px',
     border: '1px solid var(--bg-additive)',
+
     boxShadow: '0 1px 2px rgb(0 0 0 / 0.1), 0 1px 1px rgb(0 0 0 / 0.06)',
     padding: '1rem 1rem',
     marginBottom: '1.4rem',
