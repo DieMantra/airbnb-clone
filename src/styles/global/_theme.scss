@@ -4,12 +4,12 @@
 :root {
   @each $color, $shades in theme.$palette-light {
     @each $shade, $value in $shades {
-      --#{$color}-#{$shade}: #{$value};
+      --#{"" + $color}-#{$shade}: #{$value};
     }
   }
   @each $color, $shades in theme.$palette-colours {
     @each $shade, $value in $shades {
-      --#{$color}-#{$shade}: #{$value};
+      --#{"" + $color}-#{$shade}: #{$value};
     }
   }
 }
@@ -17,7 +17,7 @@
 html[data-theme='dark'] {
   @each $color, $shades in theme.$palette-dark {
     @each $shade, $value in $shades {
-      --#{$color}-#{$shade}: #{$value};
+      --#{"" + $color}-#{$shade}: #{$value};
     }
   }
 }

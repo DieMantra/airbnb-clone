@@ -52,11 +52,7 @@
     font-size: $text-3xl;
     border-radius: 9999px;
     width: 100%;
-
-    &:focus-within {
-      outline: 3px solid var(--stroke-outline);
-      outline-offset: 3px;
-    }
+    transition: all 0.1s ease-in-out;
 
     &:last-child {
       margin-bottom: $size-15;
@@ -69,15 +65,41 @@
   background-color: var(--clr-blue-100);
   box-shadow: 0 4px 3px rgb(0 0 0 / 0.07), 0 2px 2px rgb(0 0 0 / 0.06);
 
+  &:focus-within {
+    outline: 3px solid var(--clr-blue-100);
+    outline-offset: 3px;
+  }
+
   @include hover {
     background-color: var(--clr-blue-90);
+    outline: 3px solid var(--clr-blue-90);
+  }
+
+  &:active {
+    background-color: var(--clr-blue-60);
+    outline: 3px solid var(--clr-blue-60);
+  }
+
+  &:disabled {
+    background-color: var(--clr-blue-40);
+    box-shadow: none;
   }
 }
 
 .cancelBtn {
-  border: 1px solid var(--bg-additive-2x);
+  border: 1px solid var(--bg-additive-3x);
+  outline-offset: 3px;
+
+  &:focus-within {
+    outline: 3px solid var(--bg-additive-3x);
+  }
 
   @include hover {
     background-color: var(--bg-additive);
+    outline: 3px solid var(--bg-additive-2x);
+  }
+
+  &:active {
+    outline: 3px solid var(--bg-additive);
   }
 }
