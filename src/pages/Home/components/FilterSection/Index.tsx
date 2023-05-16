@@ -32,7 +32,7 @@ function Index() {
           );
         })}
       </IconContainer>
-      {'ACTIVE: ' + activeId}
+      {/* {'ACTIVE: ' + activeId} */}
     </Container>
   );
 }

@@ -35,10 +35,7 @@ function Modal({
   let startY = 0;
   let distanceY = 0;
   let closeFromDraggin = false;
-
-  useEffect(() => {
-    setCurrentTransition('closed');
-  }, []);
+  let initialHeight = 0;
 
   useEffect(() => {
     let timer: number;
@@ -91,10 +88,15 @@ function Modal({
   // DRAG EVENT HANDLERS
   function handleDragStart(event: TouchEvent<HTMLSpanElement>) {
     startY = event.targetTouches[0].clientY;
+    initialHeight = modalRef.current?.clientHeight || 0;
   }
 
   function handleDragging(event: TouchEvent<HTMLSpanElement>) {
     distanceY = Math.round(event.targetTouches[0].clientY - startY);
+    if (distanceY < 0 && distanceY > -120 && modalRef.current) {
+      const y = Math.abs(distanceY / 2);
+      modalRef.current.style.height = `${initialHeight + y}px`;
+    }
 
     if (distanceY > 0 && modalRef.current) {
       const percentageChanged =
@@ -130,10 +132,11 @@ function Modal({
     if (!modalRef.current) return;
     if (closeFromDraggin) {
       setIsOpen(false);
+      modalRef.current.style.height = `${initialHeight}px`;
     } else {
+      modalRef.current.style.height = ``;
       modalRef.current.style.removeProperty('transform');
       modalRef.current.style.removeProperty('opacity');
-
       setRootStyles();
     }
   }
