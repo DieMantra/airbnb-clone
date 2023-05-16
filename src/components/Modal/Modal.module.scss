@@ -11,10 +11,10 @@
   justify-content: center;
 
   &.closing {
-    animation: animateOverlay 200ms ease-in-out forwards reverse;
+    animation: animateOverlay 350ms ease-in-out forwards reverse;
   }
   &.opening {
-    animation: animateOverlay 200ms ease-in-out forwards;
+    animation: animateOverlay 350ms ease-in-out forwards;
   }
 }
 
@@ -42,6 +42,7 @@
     border-radius: $radius-full;
 
     backdrop-filter: invert(0.5) blur(50px);
+    -webkit-backdrop-filter: invert(0.5) blur(50px);
     box-shadow: $box-shadow-md;
 
     touch-action: none;
@@ -51,6 +52,8 @@
 .container {
   position: fixed;
   z-index: 2000;
+
+  isolation: isolate;
 
   width: 100%;
   max-width: $screen-w-sm;
@@ -65,7 +68,14 @@
   box-shadow: $box-shadow-2xl, $box-shadow-md,
     0 -25px 50px -12px rgb(0 0 0 / 0.25);
 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translate3d(0, 0, 0);
+
   @include mq(medium) {
+    transform: translate(-50%, 0) translate3d(0, 0, 0);
+    top: initial;
+
     bottom: 0;
     height: 92%;
     max-width: 100%;
@@ -74,20 +84,38 @@
   }
 
   will-change: transform;
-  transform: translate3d(0, 0, 0);
 
   &.closing {
-    animation: animateModal 200ms ease-in-out;
+    animation: animateModalDesktop 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94)
+      forwards;
     animation-direction: reverse;
+
+    @include mq(medium) {
+      animation: animateModalMobile 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94)
+        forwards;
+      animation-direction: reverse;
+    }
   }
   &.opening {
-    animation: animateModal 200ms ease-in-out forwards;
+    animation: animateModalDesktop 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94)
+      forwards;
+
+    @include mq(medium) {
+      animation: animateModalMobile 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94)
+        forwards;
+    }
   }
 }
 
-@keyframes animateModal {
+@keyframes animateModalMobile {
   from {
-    transform: translateY(100%) translate3d(0, 0, 0);
+    transform: translate(-50%, 150%) translate3d(0, 0, 0);
+  }
+}
+@keyframes animateModalDesktop {
+  from {
+    transform: translate(-50%, 250%) translate3d(0, 0, 0);
+    opacity: 0;
   }
 }
 @keyframes animateOverlay {

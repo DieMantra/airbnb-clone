@@ -24,14 +24,15 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
     'closing' | 'opening' | 'closed' | 'opened'
   >('closed');
   const ModalNode = document.getElementById('modal') as HTMLElement;
-
+  const body = document.body;
   const root = document.getElementById('root') as HTMLDivElement;
   const modalRef = useRef<HTMLDivElement>(null);
   // const isMobile = isMobileDevice();
   const TRANSITION_TIME = 200;
+  const TRANSITION_TIME_IN_OUT = 500;
 
   let startY = 0;
-  let distranceY = 0;
+  let distanceY = 0;
   let closeFromDraggin = false;
 
   const handleTriggerModalState = useCallback(
@@ -72,12 +73,12 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
   useEffect(() => {
     const timer = handleTriggerModalState({
       newState: isOpen,
-      transitionTime: TRANSITION_TIME,
+      transitionTime: TRANSITION_TIME_IN_OUT,
       callback: () => {
         if (isOpen) {
           setCurrentTransition('opening');
           setRootStyles();
-          setStyle(document.body, {
+          setStyle(body, {
             overflowY: 'hidden',
             backgroundColor: 'var(--bg-inverted)',
           });
@@ -100,7 +101,7 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
       },
     });
     return () => clearTimeout(timer);
-  }, [isOpen, handleTriggerModalState, root]);
+  }, [isOpen, handleTriggerModalState, root, body]);
 
   // DRAG EVENT HANDLERS
   function handleDragStart(event: PointerEvent<HTMLDivElement>) {
@@ -108,30 +109,28 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
   }
 
   function handleDragging(event: PointerEvent<HTMLDivElement>) {
-    distranceY = Math.round(event.clientY - startY);
+    distanceY = Math.round(event.clientY - startY);
 
-    if (distranceY > 0 && modalRef.current) {
-      const newHeightInPixels = modalRef.current?.clientHeight - distranceY;
-      const oldHeightInPixels = modalRef.current?.clientHeight;
-
+    if (distanceY > 0 && modalRef.current) {
       const percentageChanged =
-        ((newHeightInPixels - oldHeightInPixels) / oldHeightInPixels) * 100;
+        ((modalRef.current?.clientHeight - distanceY) /
+          modalRef.current?.clientHeight) *
+        100;
 
-      const newModalOpacity = (percentageChanged + 100) / 100;
-      const newRootTranslateY = Math.round((percentageChanged + 100) / 10);
-      const newRootScaleAmout = Math.min(
-        Math.max(1 - (percentageChanged + 100) / 1000 + 0.05, 0),
+      const newRootTranslateY = Math.round(percentageChanged / 10);
+      const newRootScaleAmout = +Math.min(
+        1 - percentageChanged / 1000 + 0.05,
         1,
-      );
+      ).toFixed(4);
 
-      modalRef.current.style.transform = `translateY(${distranceY}px)`;
-      modalRef.current.style.opacity = `${newModalOpacity.toFixed(2)}`;
-
+      modalRef.current.style.transform = `translate(-50%, ${distanceY}px)`;
       setStyle(root, {
         transform: `translateY(${newRootTranslateY}px) scale(${newRootScaleAmout})`,
+        borderTopLeftRadius: `${percentageChanged / 100 + 0.5}rem`,
+        borderTopRightRadius: `${percentageChanged / 100 + 0.5}rem`,
       });
 
-      if (percentageChanged + 100 < 50) {
+      if (percentageChanged < 50) {
         if (!closeFromDraggin) {
           handleTimeoutTransitionTransform({
             elementRef: modalRef,
@@ -139,9 +138,11 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
           });
         }
         closeFromDraggin = true;
-        modalRef.current.style.transform = `translateY(${distranceY + 100}px)`;
+        modalRef.current.style.transform = `translate(-50%, 90%)`;
+        modalRef.current.style.opacity = `0.5`;
       } else {
         if (closeFromDraggin) {
+          modalRef.current.style.opacity = `1`;
           handleTimeoutTransitionTransform({
             elementRef: modalRef,
             time: TRANSITION_TIME,
@@ -184,11 +185,12 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
 
   return ReactDOM.createPortal(
     modalState ? (
-      <div
-        onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}
-        key="overlay"
-        className={`${styles.overlay} ${styles[currentTransition]}`}
-      >
+      <>
+        <div
+          onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}
+          key="overlay"
+          className={`${styles.overlay} ${styles[currentTransition]}`}
+        ></div>
         <div
           ref={modalRef}
           className={`${styles.container} ${styles[currentTransition]}`}
@@ -201,7 +203,7 @@ function Modal({ children, isOpen, setIsOpen }: ModalProps) {
           />
           {children}
         </div>
-      </div>
+      </>
     ) : null,
     ModalNode,
   );
@@ -210,6 +212,7 @@ export default Modal;
 
 function setRootStyles(styles?: Styles) {
   const root = document.getElementById('root') as HTMLDivElement;
+
   setStyle(root, {
     overflowY: 'hidden',
     transition: 'transform 0.1s linear',
