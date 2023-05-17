@@ -25,7 +25,13 @@ function Index({ modalIsOpen, setModalIsOpen }: IndexProps) {
   const isDisabled = Object.values(inputs).some((value) => value.length < 3);
 
   return (
-    <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
+    <Modal
+      dialogProps={{
+        'aria-label': 'Sign up',
+      }}
+      isOpen={modalIsOpen}
+      setIsOpen={setModalIsOpen}
+    >
       <div className={styles.container}>
         <h1>Sign up</h1>
         <p>Sign up to get access to the latest news and updates</p>

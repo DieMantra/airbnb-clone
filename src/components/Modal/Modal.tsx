@@ -1,4 +1,5 @@
 import {
+  DialogHTMLAttributes,
   Dispatch,
   SetStateAction,
   TouchEvent,
@@ -17,6 +18,7 @@ interface ModalProps {
   strechty?: boolean;
   dragToClose?: boolean;
   rootContentId?: string;
+  dialogProps?: DialogHTMLAttributes<HTMLDialogElement>;
 }
 
 function Modal({
@@ -26,6 +28,7 @@ function Modal({
   dragToClose = true,
   strechty = true,
   rootContentId = 'root',
+  dialogProps,
 }: ModalProps) {
   const [currentTransition, setCurrentTransition] = useState<
     'closing' | 'opening' | 'closed' | 'opened'
@@ -187,7 +190,9 @@ function Modal({
         ></div>
         <dialog
           ref={modalRef}
+          role="dialog"
           className={`${styles.container} ${styles[currentTransition]}`}
+          {...dialogProps}
         >
           {dragToClose && isMobile && (
             <span
