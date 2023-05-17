@@ -60,14 +60,16 @@
 
   width: 100%;
   max-height: 94%;
-  max-width: $screen-w-sm;
+  max-width: $screen-w-lg;
+
+  border: none;
 
   background-color: var(--bg-secondary);
   border-radius: $radius-3xl;
 
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  // gap: 3rem;
 
   top: 50%;
   left: 50%;

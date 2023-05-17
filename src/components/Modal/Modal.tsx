@@ -31,7 +31,7 @@ function Modal({
     'closing' | 'opening' | 'closed' | 'opened'
   >('closed');
   const root = document.getElementById(rootContentId) as HTMLElement;
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
   const isMobile = isMobileDevice();
 
   const TRANSITION_TIME_IN_OUT = 400;
@@ -67,6 +67,14 @@ function Modal({
         },
         true,
       );
+      setStyle(
+        document.documentElement,
+        {
+          overflowY: 'hidden',
+          backgroundColor: 'var(--bg-inverted)',
+        },
+        true,
+      );
       // CLEAN UP
       timer = setTimeout(() => {
         setCurrentTransition('opened');
@@ -76,18 +84,13 @@ function Modal({
     } else {
       setCurrentTransition('closing');
 
-      reset(root, [
-        'overflowY',
-        'transform',
-        'minHeight',
-        'borderRadius',
-        'boxShadow',
-      ]);
+      reset(root, ['transform', 'borderRadius', 'boxShadow']);
 
       // CLEAN UP
       timer = setTimeout(() => {
         reset(root);
         reset(document.body);
+        reset(document.documentElement);
         setCurrentTransition('closed');
       }, TRANSITION_TIME_IN_OUT);
     }
@@ -182,7 +185,7 @@ function Modal({
           key="overlay"
           className={`${styles.overlay} ${styles[currentTransition]}`}
         ></div>
-        <div
+        <dialog
           ref={modalRef}
           className={`${styles.container} ${styles[currentTransition]}`}
         >
@@ -201,7 +204,7 @@ function Modal({
           >
             {children}
           </div>
-        </div>
+        </dialog>
       </>
     ) : null,
     document.body,
