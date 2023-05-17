@@ -14,6 +14,7 @@ interface ModalProps {
   children?: React.ReactNode;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  strechty?: boolean;
   dragToClose?: boolean;
   rootContentId?: string;
 }
@@ -23,12 +24,13 @@ function Modal({
   isOpen,
   setIsOpen,
   dragToClose = true,
+  strechty = true,
   rootContentId = 'root',
 }: ModalProps) {
   const [currentTransition, setCurrentTransition] = useState<
     'closing' | 'opening' | 'closed' | 'opened'
   >('closed');
-  const root = document.getElementById(rootContentId) as HTMLDivElement;
+  const root = document.getElementById(rootContentId) as HTMLElement;
   const modalRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
 
@@ -43,17 +45,18 @@ function Modal({
     let timer: number;
 
     if (isOpen) {
-      setCurrentTransition('opening');
-      setRootStyles();
-      setStyle(document.body, {
-        overflowY: 'hidden',
-        backgroundColor: 'var(--bg-inverted)',
-      });
+      timer = handleOpenModal();
+      // setCurrentTransition('opening');
+      // setRootStyles();
+      // setStyle(document.body, {
+      //   overflowY: 'hidden',
+      //   backgroundColor: 'var(--bg-inverted)',
+      // });
 
-      // CLEAN UP
-      timer = setTimeout(() => {
-        setCurrentTransition('opened');
-      }, TRANSITION_TIME_IN_OUT);
+      // // CLEAN UP
+      // timer = setTimeout(() => {
+      //   setCurrentTransition('opened');
+      // }, TRANSITION_TIME_IN_OUT);
       // ELSE RUN WHEN CLOSING
     } else {
       setCurrentTransition('closing');
@@ -62,8 +65,7 @@ function Modal({
         'overflow-y',
         'transform',
         'min-height',
-        'border-top-left-radius',
-        'border-top-right-radius',
+        'border-radius',
         'box-shadow',
       ].forEach((str) => {
         (
@@ -95,7 +97,14 @@ function Modal({
 
   function handleDragging(event: TouchEvent<HTMLSpanElement>) {
     distanceY = Math.round(event.targetTouches[0].clientY - startY);
-    if (distanceY < 0 && distanceY > -120 && modalRef.current) {
+
+    if (
+      distanceY < 0 &&
+      distanceY > -120 &&
+      modalRef.current &&
+      strechty &&
+      +((initialHeight / document.body.clientHeight) * 100).toFixed() < 94
+    ) {
       const y = Math.abs(distanceY / 2);
       modalRef.current.style.height = `${initialHeight + y}px`;
     }
@@ -113,11 +122,15 @@ function Modal({
       ).toFixed(4);
 
       modalRef.current.style.transform = `translate(-50%, ${distanceY}px)`;
-      setStyle(root, {
-        transform: `translateY(${newRootTranslateY}px) scale(${newRootScaleAmout})`,
-        borderTopLeftRadius: `${percentageChanged / 100 + 0.5}rem`,
-        borderTopRightRadius: `${percentageChanged / 100 + 0.5}rem`,
-      });
+      setStyle(
+        root,
+        {
+          transform: `translateY(${newRootTranslateY}px) scale(${newRootScaleAmout})`,
+          borderTopLeftRadius: `${percentageChanged / 100 + 0.5}rem`,
+          borderTopRightRadius: `${percentageChanged / 100 + 0.5}rem`,
+        },
+        false,
+      );
 
       if (percentageChanged < 50) {
         modalRef.current.style.transform = `translate(-50%, 90%)`;
@@ -143,6 +156,24 @@ function Modal({
     }
   }
 
+  function handleOpenModal() {
+    setCurrentTransition('opening');
+    setRootStyles();
+    setStyle(
+      document.body,
+      {
+        overflowY: 'hidden',
+        backgroundColor: 'var(--bg-inverted)',
+      },
+      true,
+    );
+
+    // CLEAN UP
+    return setTimeout(() => {
+      setCurrentTransition('opened');
+    }, TRANSITION_TIME_IN_OUT);
+  }
+
   return ReactDOM.createPortal(
     currentTransition !== 'closed' ? (
       <>
@@ -163,11 +194,17 @@ function Modal({
               className={styles.dragBar}
             />
           )}
-          {children}
+          <div
+            style={{
+              overflowY: 'scroll',
+            }}
+          >
+            {children}
+          </div>
         </div>
       </>
     ) : null,
-    document.getElementById('modal') as HTMLDivElement,
+    document.body,
   );
 }
 export default Modal;
@@ -175,41 +212,46 @@ export default Modal;
 function setRootStyles(styles?: Styles) {
   const root = document.getElementById('root') as HTMLDivElement;
 
-  setStyle(root, {
-    overflowY: 'hidden',
-    transition: 'transform 0.1s linear',
-    transform: 'translateY(10px) scale(0.95)',
-    minHeight: '100vh',
-    borderTopLeftRadius: '1.5rem',
-    borderTopRightRadius: '1.5rem',
-    boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
-    ...styles,
-  });
+  setStyle(
+    root,
+    {
+      overflowY: 'hidden',
+      transition: 'transform 0.1s linear',
+      transform: 'translateY(10px) scale(0.95)',
+      minHeight: '100vh',
+      borderRadius: '1.5rem',
+      boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
+      ...styles,
+    },
+    true,
+  );
 }
 
-const cache = new Map();
+const originalStylesCache = new Map();
 
 type Styles = {
   [key in keyof CSSStyleDeclaration]?: CSSStyleDeclaration[key];
 };
 
-function setStyle(el: HTMLElement, styles: Styles) {
+function setStyle(el: HTMLElement, styles: Styles, initialRender: boolean) {
   const originalStyles = {};
-
   Object.entries(styles).forEach(([key, value]) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    originalStyles[key] = el.style[key];
+    if (initialRender) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      originalStyles[key] = el.style[key];
+    }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     el.style[key] = value;
   });
-
-  cache.set(el, originalStyles);
+  if (initialRender) {
+    originalStylesCache.set(el, originalStyles);
+  }
 }
 
 // function reset(el: HTMLElement, prop?: (keyof CSSStyleDeclaration)[]) {
-//   const originalStyles = cache.get(el);
+//   const originalStyles = originalStylesCache.get(el);
 
 //   if (prop) {
 //     prop.forEach((p) => {

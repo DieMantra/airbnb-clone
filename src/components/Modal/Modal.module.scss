@@ -15,43 +15,51 @@
 }
 
 .dragBar {
-  position: absolute;
-  top: -$size-5;
+  position: fixed;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
 
   padding: $size-14;
-  width: 50%;
+  width: 100%;
   height: $size-6;
+
+  background: linear-gradient(
+    180deg,
+    var(--bg-secondary) 50%,
+    transparent 100%
+  );
 
   touch-action: none;
 
   &::after {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 
     height: $size-8;
-    width: 100%;
+    width: 50%;
     border-radius: $radius-full;
 
-    backdrop-filter: invert(0.5) blur(50px);
-    -webkit-backdrop-filter: invert(0.5) blur(50px);
-    box-shadow: $box-shadow-md;
+    backdrop-filter: invert(0.2) blur(50px);
+    -webkit-backdrop-filter: invert(0.2) blur(50px);
+    box-shadow: $box-shadow-sm;
 
     touch-action: none;
   }
 }
 
 .container {
-  position: fixed;
+  position: absolute;
   z-index: 9000;
+  overflow: hidden;
 
   isolation: isolate;
 
   width: 100%;
+  max-height: 94%;
   max-width: $screen-w-sm;
 
   background-color: var(--bg-secondary);
