@@ -57,6 +57,48 @@ function Index({ modalIsOpen, setModalIsOpen }: IndexProps) {
         >
           Cancle
         </button>
+        <button
+          className={styles.cancelBtn}
+          onClick={setModalIsOpen.bind(null, false)}
+        >
+          Cancle
+        </button>
+        <button
+          className={styles.cancelBtn}
+          onClick={setModalIsOpen.bind(null, false)}
+        >
+          Cancle
+        </button>
+        <button
+          className={styles.cancelBtn}
+          onClick={setModalIsOpen.bind(null, false)}
+        >
+          Cancle
+        </button>
+        <button
+          className={styles.cancelBtn}
+          onClick={setModalIsOpen.bind(null, false)}
+        >
+          Cancle
+        </button>
+        <button
+          className={styles.cancelBtn}
+          onClick={setModalIsOpen.bind(null, false)}
+        >
+          Cancle
+        </button>
+        <button
+          className={styles.cancelBtn}
+          onClick={setModalIsOpen.bind(null, false)}
+        >
+          Cancle
+        </button>
+        <button
+          className={styles.cancelBtn}
+          onClick={setModalIsOpen.bind(null, false)}
+        >
+          Cancle
+        </button>
       </div>
     </Modal>
   );

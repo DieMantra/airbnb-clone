@@ -54,7 +54,7 @@
 .container {
   position: absolute;
   z-index: 9000;
-  overflow: hidden;
+  overflow-x: hidden;
 
   isolation: isolate;
 

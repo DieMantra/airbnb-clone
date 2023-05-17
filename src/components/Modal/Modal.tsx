@@ -35,6 +35,8 @@ function Modal({
   const isMobile = isMobileDevice();
 
   const TRANSITION_TIME_IN_OUT = 400;
+  const TRANSFORM_Y_AMOUNT = 25;
+  const TRANSFORM_SCALE_AMOUNT = 0.94;
 
   let startY = 0;
   let distanceY = 0;
@@ -43,47 +45,55 @@ function Modal({
 
   useEffect(() => {
     let timer: number;
-
     if (isOpen) {
-      timer = handleOpenModal();
-      // setCurrentTransition('opening');
-      // setRootStyles();
-      // setStyle(document.body, {
-      //   overflowY: 'hidden',
-      //   backgroundColor: 'var(--bg-inverted)',
-      // });
+      setCurrentTransition('opening');
+      setStyle(
+        root,
+        {
+          overflowY: 'hidden',
+          transition: 'transform 0.1s linear',
+          transform: `translateY(${TRANSFORM_Y_AMOUNT}px) scale(${TRANSFORM_SCALE_AMOUNT})`,
+          transformOrigin: 'top',
+          borderRadius: '1.5rem',
+          boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
+        },
+        true,
+      );
+      setStyle(
+        document.body,
+        {
+          overflowY: 'hidden',
+          backgroundColor: 'var(--bg-inverted)',
+        },
+        true,
+      );
+      // CLEAN UP
+      timer = setTimeout(() => {
+        setCurrentTransition('opened');
+      }, TRANSITION_TIME_IN_OUT);
 
-      // // CLEAN UP
-      // timer = setTimeout(() => {
-      //   setCurrentTransition('opened');
-      // }, TRANSITION_TIME_IN_OUT);
       // ELSE RUN WHEN CLOSING
     } else {
       setCurrentTransition('closing');
 
-      [
-        'overflow-y',
+      reset(root, [
+        'overflowY',
         'transform',
-        'min-height',
-        'border-radius',
-        'box-shadow',
-      ].forEach((str) => {
-        (
-          document.getElementById('root') as HTMLDivElement
-        ).style.removeProperty(str);
-      });
+        'minHeight',
+        'borderRadius',
+        'boxShadow',
+      ]);
 
       // CLEAN UP
       timer = setTimeout(() => {
-        (
-          document.getElementById('root') as HTMLDivElement
-        ).style.removeProperty('transition');
+        reset(root);
+        reset(document.body);
         setCurrentTransition('closed');
       }, TRANSITION_TIME_IN_OUT);
     }
 
     return () => clearTimeout(timer);
-  }, [isOpen]);
+  }, [isOpen, root]);
 
   useEffect(() => {
     setCurrentTransition('closed');
@@ -96,14 +106,13 @@ function Modal({
   }
 
   function handleDragging(event: TouchEvent<HTMLSpanElement>) {
-    distanceY = Math.round(event.targetTouches[0].clientY - startY);
-
+    distanceY = event.targetTouches[0].clientY - startY;
     if (
       distanceY < 0 &&
       distanceY > -120 &&
       modalRef.current &&
       strechty &&
-      +((initialHeight / document.body.clientHeight) * 100).toFixed() < 94
+      +((initialHeight / window.innerHeight) * 100).toFixed() < 94
     ) {
       const y = Math.abs(distanceY / 2);
       modalRef.current.style.height = `${initialHeight + y}px`;
@@ -115,11 +124,11 @@ function Modal({
           modalRef.current?.clientHeight) *
         100;
 
-      const newRootTranslateY = Math.round(percentageChanged / 10);
-      const newRootScaleAmout = +Math.min(
-        1 - percentageChanged / 1000 + 0.05,
+      const newRootTranslateY = 0.25 * percentageChanged;
+      const newRootScaleAmout = Math.min(
+        1 - percentageChanged / 1000 + 0.04,
         1,
-      ).toFixed(4);
+      );
 
       modalRef.current.style.transform = `translate(-50%, ${distanceY}px)`;
       setStyle(
@@ -147,31 +156,22 @@ function Modal({
     if (!modalRef.current) return;
     if (closeFromDraggin) {
       setIsOpen(false);
-      modalRef.current.style.height = `${initialHeight}px`;
     } else {
-      modalRef.current.style.height = ``;
+      modalRef.current.style.removeProperty('height');
       modalRef.current.style.removeProperty('transform');
       modalRef.current.style.removeProperty('opacity');
-      setRootStyles();
+      setStyle(
+        root,
+        {
+          overflowY: 'hidden',
+          transition: 'transform 0.1s linear',
+          transform: `translateY(${TRANSFORM_Y_AMOUNT}px) scale(${TRANSFORM_SCALE_AMOUNT})`,
+          borderRadius: '1.5rem',
+          boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
+        },
+        false,
+      );
     }
-  }
-
-  function handleOpenModal() {
-    setCurrentTransition('opening');
-    setRootStyles();
-    setStyle(
-      document.body,
-      {
-        overflowY: 'hidden',
-        backgroundColor: 'var(--bg-inverted)',
-      },
-      true,
-    );
-
-    // CLEAN UP
-    return setTimeout(() => {
-      setCurrentTransition('opened');
-    }, TRANSITION_TIME_IN_OUT);
   }
 
   return ReactDOM.createPortal(
@@ -209,24 +209,6 @@ function Modal({
 }
 export default Modal;
 
-function setRootStyles(styles?: Styles) {
-  const root = document.getElementById('root') as HTMLDivElement;
-
-  setStyle(
-    root,
-    {
-      overflowY: 'hidden',
-      transition: 'transform 0.1s linear',
-      transform: 'translateY(10px) scale(0.95)',
-      minHeight: '100vh',
-      borderRadius: '1.5rem',
-      boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
-      ...styles,
-    },
-    true,
-  );
-}
-
 const originalStylesCache = new Map();
 
 type Styles = {
@@ -250,20 +232,23 @@ function setStyle(el: HTMLElement, styles: Styles, initialRender: boolean) {
   }
 }
 
-// function reset(el: HTMLElement, prop?: (keyof CSSStyleDeclaration)[]) {
-//   const originalStyles = originalStylesCache.get(el);
+function reset(el: HTMLElement, prop?: (keyof CSSStyleDeclaration)[]) {
+  const originalStyles = originalStylesCache.get(el);
+  if (!originalStyles) return;
 
-//   if (prop) {
-//     prop.forEach((p) => {
-//       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//       // @ts-ignore
-//       el.style[p] = originalStyles[p];
-//     });
-//   } else {
-//     Object.entries(originalStyles).forEach(([key, value]) => {
-//       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//       // @ts-ignore
-//       el.style[key] = value;
-//     });
-//   }
-// }
+  if (prop) {
+    prop.forEach((p) => {
+      if (el.style[p]) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        el.style[p] = originalStyles[p];
+      }
+    });
+  } else {
+    Object.entries(originalStyles).forEach(([key, value]) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      el.style[key] = value;
+    });
+  }
+}
