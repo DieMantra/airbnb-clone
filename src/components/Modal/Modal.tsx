@@ -181,6 +181,19 @@ function Modal({
     }
   }
 
+  function handleFocus() {
+    // on mobile when the keyboard opens to type into a input, it shifts the layout of the modal.
+    // then when you leave the focus of one of the inputs the modal is in the wrong position.
+    // this is a hacky fix to reset the modal position when the keyboard is closed.
+    if (isMobile) {
+      setTimeout(() => {
+        if (modalRef.current) {
+          modalRef.current.style.bottom = '0';
+        }
+      }, 500);
+    }
+  }
+
   return ReactDOM.createPortal(
     currentTransition !== 'closed' ? (
       <>
@@ -203,7 +216,7 @@ function Modal({
               className={styles.dragBar}
             />
           )}
-          <div>{children}</div>
+          <div onFocus={handleFocus}>{children}</div>
         </dialog>
       </>
     ) : null,
