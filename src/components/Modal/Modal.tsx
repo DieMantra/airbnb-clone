@@ -65,7 +65,7 @@ function Modal({
       setStyle(
         document.body,
         {
-          overflowY: 'hidden',
+          overflow: 'hidden',
           backgroundColor: 'var(--bg-inverted)',
         },
         true,
@@ -73,11 +73,12 @@ function Modal({
       setStyle(
         document.documentElement,
         {
-          overflowY: 'hidden',
+          overflow: 'hidden',
           backgroundColor: 'var(--bg-inverted)',
         },
         true,
       );
+
       // CLEAN UP
       timer = setTimeout(() => {
         setCurrentTransition('opened');
@@ -202,13 +203,7 @@ function Modal({
               className={styles.dragBar}
             />
           )}
-          <div
-            style={{
-              overflowY: 'scroll',
-            }}
-          >
-            {children}
-          </div>
+          <div>{children}</div>
         </dialog>
       </>
     ) : null,
