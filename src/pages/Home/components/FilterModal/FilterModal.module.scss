@@ -15,7 +15,7 @@
     font-size: $text-7xl;
 
     margin-bottom: $size-10;
-    margin-top: $size-20;
+    margin-top: $size-10;
   }
 
   & p {
@@ -55,7 +55,7 @@
     transition: all 0.1s ease-in-out;
 
     &:last-child {
-      margin-bottom: $size-15;
+      margin-bottom: $size-25;
     }
   }
 }

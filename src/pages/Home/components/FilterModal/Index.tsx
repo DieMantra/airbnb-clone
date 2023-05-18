@@ -37,18 +37,21 @@ function Index({ modalIsOpen, setModalIsOpen }: IndexProps) {
         <p>Sign up to get access to the latest news and updates</p>
         <input
           onChange={handleInput}
+          value={inputs.firstname}
           name="firstname"
           type="text"
           placeholder="First Name"
         />
         <input
           onChange={handleInput}
+          value={inputs.lastname}
           name="lastname"
           type="text"
           placeholder="Last Name"
         />
         <input
           onChange={handleInput}
+          value={inputs.email}
           name="email"
           type="text"
           placeholder="Email"

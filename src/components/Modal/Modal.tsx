@@ -35,11 +35,13 @@ function Modal({
   >('closed');
   const root = document.getElementById(rootContentId) as HTMLElement;
   const modalRef = useRef<HTMLDialogElement>(null);
+  const bgCropRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
 
   const TRANSITION_TIME_IN_OUT = 400;
   const TRANSFORM_Y_AMOUNT = 25;
   const TRANSFORM_SCALE_AMOUNT = 0.94;
+  const TRANSITION_BEZIER = 'cubic-bezier(0.4, 0, 0.2, 1)';
 
   let startY = 0;
   let distanceY = 0;
@@ -54,10 +56,9 @@ function Modal({
         root,
         {
           overflowY: 'hidden',
-          transition: 'transform 0.1s linear',
+          transition: `transform 0.1s ${TRANSITION_BEZIER}`,
           transform: `translateY(${TRANSFORM_Y_AMOUNT}px) scale(${TRANSFORM_SCALE_AMOUNT})`,
           transformOrigin: 'top',
-          borderRadius: '1.5rem',
           boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
         },
         true,
@@ -74,7 +75,7 @@ function Modal({
         document.documentElement,
         {
           overflow: 'hidden',
-          backgroundColor: 'var(--bg-inverted)',
+          backgroundColor: 'black',
         },
         true,
       );
@@ -119,7 +120,7 @@ function Modal({
       distanceY > -120 &&
       modalRef.current &&
       strechty &&
-      +((initialHeight / window.innerHeight) * 100).toFixed() < 94
+      +((initialHeight / window.innerHeight) * 100).toFixed() < 84
     ) {
       const y = Math.abs(distanceY / 2);
       modalRef.current.style.height = `${initialHeight + y}px`;
@@ -138,15 +139,19 @@ function Modal({
       );
 
       modalRef.current.style.transform = `translate(-50%, ${distanceY}px)`;
+
       setStyle(
         root,
         {
           transform: `translateY(${newRootTranslateY}px) scale(${newRootScaleAmout})`,
-          borderTopLeftRadius: `${percentageChanged / 100 + 0.5}rem`,
-          borderTopRightRadius: `${percentageChanged / 100 + 0.5}rem`,
         },
         false,
       );
+      if (!bgCropRef.current) return;
+      bgCropRef.current.style.transform = `translateY(${newRootTranslateY}px) scale(${newRootScaleAmout})`;
+      bgCropRef.current.style.borderRadius = `${
+        percentageChanged / 100 + 0.5
+      }rem`;
 
       if (percentageChanged < 50) {
         modalRef.current.style.transform = `translate(-50%, 90%)`;
@@ -160,37 +165,27 @@ function Modal({
   }
 
   function handleDragEnd() {
-    if (!modalRef.current) return;
+    if (!modalRef.current || !bgCropRef.current) return;
     if (closeFromDraggin) {
       setIsOpen(false);
     } else {
       modalRef.current.style.removeProperty('height');
       modalRef.current.style.removeProperty('transform');
       modalRef.current.style.removeProperty('opacity');
+      modalRef.current.style.removeProperty('borderRadius');
+
+      bgCropRef.current.style.removeProperty('transform');
+      bgCropRef.current.style.removeProperty('borderRadius');
       setStyle(
         root,
         {
           overflowY: 'hidden',
-          transition: 'transform 0.1s linear',
+          transition: `transform 0.1s ${TRANSITION_BEZIER}`,
           transform: `translateY(${TRANSFORM_Y_AMOUNT}px) scale(${TRANSFORM_SCALE_AMOUNT})`,
-          borderRadius: '1.5rem',
           boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
         },
         false,
       );
-    }
-  }
-
-  function handleFocus() {
-    // on mobile when the keyboard opens to type into a input, it shifts the layout of the modal.
-    // then when you leave the focus of one of the inputs the modal is in the wrong position.
-    // this is a hacky fix to reset the modal position when the keyboard is closed.
-    if (isMobile) {
-      setTimeout(() => {
-        if (modalRef.current) {
-          modalRef.current.style.bottom = '0';
-        }
-      }, 500);
     }
   }
 
@@ -200,8 +195,14 @@ function Modal({
         <div
           onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}
           key="overlay"
+          aria-hidden="true"
           className={`${styles.overlay} ${styles[currentTransition]}`}
-        ></div>
+        />
+        <div
+          ref={bgCropRef}
+          className={`${styles.bgCroper} ${styles[currentTransition]}`}
+        />
+
         <dialog
           ref={modalRef}
           role="dialog"
@@ -216,7 +217,7 @@ function Modal({
               className={styles.dragBar}
             />
           )}
-          <div onFocus={handleFocus}>{children}</div>
+          <div className={styles.contentContainer}>{children}</div>
         </dialog>
       </>
     ) : null,

@@ -6,7 +6,7 @@ import IconContainer from './IconContainer';
 
 function Index() {
   const [activeId, setActiveId] = useState('');
-  const [modalIsOpen, setmModalIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handleUpdateActiveId = (e: string) => {
     setActiveId(e);
@@ -16,7 +16,7 @@ function Index() {
     <Container marginInlineAuto>
       <IconContainer
         modalIsOpen={modalIsOpen}
-        setModalIsOpen={setmModalIsOpen}
+        setModalIsOpen={setModalIsOpen}
         setActiveId={handleUpdateActiveId}
       >
         {icons.map((iconUrl) => {
