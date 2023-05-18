@@ -218,10 +218,10 @@ function Modal({
           className={`${styles.container} ${styles[currentTransition]}`}
           {...dialogProps}
           onTouchStart={(e) => {
-            e.currentTarget.scrollTop === 0 && handleDragStart(e);
+            e.currentTarget.scrollTop <= 0 && handleDragStart(e);
           }}
           onTouchMove={(e) => {
-            e.currentTarget.scrollTop === 0 && handleDragging(e);
+            e.currentTarget.scrollTop <= 0 && handleDragging(e);
           }}
           onTouchEnd={handleDragEnd}
         >
