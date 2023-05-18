@@ -9,7 +9,8 @@
   overflow: hidden;
 
   &.closing {
-    animation: animateOverlay 350ms ease-in-out forwards reverse;
+    animation: animateOverlay 350ms ease-in-out forwards;
+    animation-direction: reverse;
   }
   &.opening {
     animation: animateOverlay 350ms ease-in-out forwards;
@@ -20,24 +21,29 @@
   position: fixed;
   inset: 0;
   margin: auto;
+  overflow: hidden;
 
   transform-origin: center top;
+
   transform: translateY(25px) scale(0.94);
   border-radius: $radius-3xl;
-
-  box-shadow: inset 0px 0px 10px 3px var(--bg-additive-2x);
   outline: 100px solid var(--bg-inverted);
+  box-shadow: inset 0px 0px 20px 10px var(--bg-additive-2x),
+    inset 0px 0px 20px 5px var(--bg-additive-2x);
 
-  transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  &.closing {
-    scale: 1;
-    border-radius: 0;
-    inset: 0;
-    opacity: 0;
+  &.opening {
+    animation: inOut 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
-  &.closed {
-    display: none;
+  &.closing {
+    animation: inOut 100ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-direction: reverse;
+  }
+
+  @keyframes inOut {
+    from {
+      transform: translateY(0px) scale(1);
+      border-radius: 0;
+    }
   }
 }
 

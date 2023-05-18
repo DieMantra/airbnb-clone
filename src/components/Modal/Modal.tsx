@@ -38,7 +38,7 @@ function Modal({
   const bgCropRef = useRef<HTMLDivElement>(null);
   const isMobile = isMobileDevice();
 
-  const TRANSITION_TIME_IN_OUT = 400;
+  const TRANSITION_TIME_IN_OUT = 200;
   const TRANSFORM_Y_AMOUNT = 25;
   const TRANSFORM_SCALE_AMOUNT = 0.94;
   const TRANSITION_BEZIER = 'cubic-bezier(0.4, 0, 0.2, 1)';
@@ -56,9 +56,9 @@ function Modal({
         root,
         {
           overflowY: 'hidden',
-          transition: `transform 0.1s ${TRANSITION_BEZIER}`,
+          transition: `transform ${TRANSITION_TIME_IN_OUT}ms ${TRANSITION_BEZIER}`,
           transform: `translateY(${TRANSFORM_Y_AMOUNT}px) scale(${TRANSFORM_SCALE_AMOUNT})`,
-          transformOrigin: 'top',
+          transformOrigin: 'center top',
           boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
         },
         true,
@@ -83,12 +83,19 @@ function Modal({
       // CLEAN UP
       timer = setTimeout(() => {
         setCurrentTransition('opened');
+        root.style.removeProperty('transition');
       }, TRANSITION_TIME_IN_OUT);
 
       // ELSE RUN WHEN CLOSING
     } else {
       setCurrentTransition('closing');
-
+      setStyle(
+        root,
+        {
+          transition: `transform ${TRANSITION_TIME_IN_OUT}ms ${TRANSITION_BEZIER}`,
+        },
+        false,
+      );
       reset(root, ['transform', 'borderRadius', 'boxShadow']);
 
       // CLEAN UP
@@ -126,7 +133,7 @@ function Modal({
       modalRef.current.style.height = `${initialHeight + y}px`;
     }
 
-    if (distanceY > 0 && modalRef.current) {
+    if (distanceY > 0 && modalRef.current && bgCropRef.current) {
       const percentageChanged =
         ((modalRef.current?.clientHeight - distanceY) /
           modalRef.current?.clientHeight) *
@@ -139,7 +146,6 @@ function Modal({
       );
 
       modalRef.current.style.transform = `translate(-50%, ${distanceY}px)`;
-
       setStyle(
         root,
         {
@@ -147,13 +153,13 @@ function Modal({
         },
         false,
       );
-      if (!bgCropRef.current) return;
+
       bgCropRef.current.style.transform = `translateY(${newRootTranslateY}px) scale(${newRootScaleAmout})`;
       bgCropRef.current.style.borderRadius = `${
         percentageChanged / 100 + 0.5
       }rem`;
 
-      if (percentageChanged < 50) {
+      if (percentageChanged < 40) {
         modalRef.current.style.transform = `translate(-50%, 90%)`;
         modalRef.current.style.opacity = `0.5`;
         closeFromDraggin = true;
@@ -180,12 +186,15 @@ function Modal({
         root,
         {
           overflowY: 'hidden',
-          transition: `transform 0.1s ${TRANSITION_BEZIER}`,
+          transition: `transform ${TRANSITION_TIME_IN_OUT}ms ${TRANSITION_BEZIER}`,
           transform: `translateY(${TRANSFORM_Y_AMOUNT}px) scale(${TRANSFORM_SCALE_AMOUNT})`,
           boxShadow: '0 -15px 50px -12px rgb(0 0 0 / 0.25)',
         },
         false,
       );
+      setTimeout(() => {
+        root.style.removeProperty('transition');
+      }, TRANSITION_TIME_IN_OUT);
     }
   }
 
@@ -208,6 +217,13 @@ function Modal({
           role="dialog"
           className={`${styles.container} ${styles[currentTransition]}`}
           {...dialogProps}
+          onTouchStart={(e) => {
+            e.currentTarget.scrollTop === 0 && handleDragStart(e);
+          }}
+          onTouchMove={(e) => {
+            e.currentTarget.scrollTop === 0 && handleDragging(e);
+          }}
+          onTouchEnd={handleDragEnd}
         >
           {dragToClose && isMobile && (
             <span
