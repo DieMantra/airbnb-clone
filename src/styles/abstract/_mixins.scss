@@ -26,6 +26,12 @@
   }
 }
 
+@mixin display-standalone {
+  @media screen and (display-mode: standalone) {
+    @content;
+  }
+}
+
 $break-points: (
   xxxlarge: $screen-w-3xl,
   xxlarge: $screen-w-2xl,

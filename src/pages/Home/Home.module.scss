@@ -1,0 +1,7 @@
+@use 'src/styles/abstract/index' as *;
+
+.homeContainer {
+  @include display-standalone {
+    margin-top: $size-20;
+  }
+}

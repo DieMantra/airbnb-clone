@@ -75,7 +75,7 @@ function Modal({
         document.documentElement,
         {
           overflow: 'hidden',
-          backgroundColor: 'black',
+          backgroundColor: 'var(--bg-inverted)',
         },
         true,
       );
@@ -224,6 +224,13 @@ function Modal({
             e.currentTarget.scrollTop <= 0 && handleDragging(e);
           }}
           onTouchEnd={handleDragEnd}
+          onScroll={(e) => {
+            if (e.currentTarget.scrollTop <= 0) {
+              e.currentTarget.style.overscrollBehaviorY = 'none';
+            } else {
+              e.currentTarget.style.overscrollBehaviorY = 'initial';
+            }
+          }}
         >
           {dragToClose && isMobile && (
             <span

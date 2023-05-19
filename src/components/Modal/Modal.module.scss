@@ -3,8 +3,12 @@
 .overlay {
   position: fixed;
   inset: 0;
+  margin: auto;
+  border-radius: $radius-3xl;
   z-index: 8000;
   background-color: rgba(0, 0, 0, 0.25);
+  transform-origin: center top;
+  transform: translateY(24px) scale(0.94);
 
   overflow: hidden;
 
@@ -87,6 +91,7 @@
   z-index: 9000;
   display: block;
   overflow-y: scroll;
+
   &::-webkit-scrollbar {
     display: none;
   }
