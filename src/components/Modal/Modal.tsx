@@ -202,13 +202,10 @@ function Modal({
     currentTransition !== 'closed' ? (
       <>
         <div
-          onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}
           key="overlay"
-          aria-hidden="true"
-          className={`${styles.overlay} ${styles[currentTransition]}`}
-        />
-        <div
           ref={bgCropRef}
+          aria-hidden="true"
+          onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}
           className={`${styles.bgCroper} ${styles[currentTransition]}`}
         />
 

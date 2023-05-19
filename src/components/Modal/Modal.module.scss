@@ -1,35 +1,17 @@
 @use 'src/styles/abstract/' as *;
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  margin: auto;
-  border-radius: $radius-3xl;
-  z-index: 8000;
-  background-color: rgba(0, 0, 0, 0.25);
-  transform-origin: center top;
-  transform: translateY(24px) scale(0.94);
-
-  overflow: hidden;
-
-  &.closing {
-    animation: animateOverlay 350ms ease-in-out forwards;
-    animation-direction: reverse;
-  }
-  &.opening {
-    animation: animateOverlay 350ms ease-in-out forwards;
-  }
-}
-
 .bgCroper {
   position: fixed;
   inset: 0;
   margin: auto;
   overflow: hidden;
+  z-index: 8000;
 
   transform-origin: center top;
 
   transform: translateY(25px) scale(0.94);
+
+  background-color: rgba(0, 0, 0, 0.25);
+
   border-radius: $radius-3xl;
   outline: 100px solid var(--bg-inverted);
   box-shadow: inset 0px 0px 20px 10px var(--bg-additive-2x),
@@ -47,6 +29,7 @@
     from {
       transform: translateY(0px) scale(1);
       border-radius: 0;
+      opacity: 0;
     }
   }
 }
@@ -92,9 +75,8 @@
   display: block;
   overflow-y: scroll;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
   width: 100%;
   max-height: 84dvh;
