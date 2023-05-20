@@ -1,0 +1,96 @@
+@use 'src/styles/abstract/' as *;
+
+.headerContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  padding-inline: $size-18;
+  padding-block: $size-15;
+
+  border-bottom: 1px solid var(--stroke-outline);
+}
+
+.logo {
+  color: var(--clr-brand-red);
+
+  & svg {
+    display: block;
+
+    & path:nth-child(2) {
+      @include mq(large) {
+        display: none;
+      }
+    }
+  }
+}
+
+.searchControls {
+  border-radius: $radius-full;
+  border: 1px solid var(--stroke-outline);
+  font-size: $text-3xl;
+
+  display: flex;
+  justify-content: space-between;
+
+  cursor: pointer;
+
+  transition: all 0.1s ease-in-out;
+  box-shadow: $box-shadow-sm;
+
+  @include hover {
+    box-shadow: $box-shadow-md;
+  }
+}
+
+.searchBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding-inline: $size-12;
+
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 50%;
+
+    border-right: 1px solid var(--stroke-outline);
+  }
+  &:first-child {
+    padding-left: $size-15;
+  }
+
+  &:last-child {
+    padding-right: 0;
+  }
+
+  &.addGuests {
+    color: var(--text-secondary);
+  }
+
+  & .searchIcon {
+    margin: $size-8;
+    height: $size-18;
+    width: $size-18;
+    padding: $size-6;
+    background-color: var(--clr-brand-red);
+    border-radius: $radius-full;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & svg {
+      font-size: $text-2xl;
+      color: var(--white-100);
+    }
+  }
+}

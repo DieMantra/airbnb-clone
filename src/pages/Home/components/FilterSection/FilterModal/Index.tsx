@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import Modal from '../../../../components/Modal/Modal';
+import Modal from '../../../../../components/Modal/Modal';
 import styles from './FilterModal.module.scss';
 interface IndexProps {
   modalIsOpen: boolean;

@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useRef } from 'react';
 import { useButton } from 'react-aria';
 import { CiSliderHorizontal } from 'react-icons/ci';
-import Modal from '../FilterModal/Index';
 import styles from './FilterButton.module.scss';
+import Modal from './FilterModal/Index';
 
 interface FilterButtonProps {
   modalIsOpen: boolean;
