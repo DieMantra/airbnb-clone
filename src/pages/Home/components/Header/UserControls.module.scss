@@ -1,0 +1,123 @@
+@use '/src/styles/abstract/index.scss' as *;
+
+.container {
+  display: flex;
+  align-items: stretch;
+
+  height: $size-19;
+}
+
+.hostYourHomeLink {
+  display: flex;
+  align-items: center;
+
+  font-size: $text-2xl;
+  font-weight: 500;
+
+  padding: $size-10;
+  border-radius: $radius-full;
+
+  @include hover {
+    background-color: var(--bg-additive);
+  }
+}
+
+.languageOpenBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: $size-12;
+  aspect-ratio: 1 /1;
+  border-radius: $radius-full;
+
+  @include hover {
+    background-color: var(--bg-additive);
+  }
+
+  &.isOpen {
+    background-color: var(--bg-additive);
+  }
+}
+
+.userLoginContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: $radius-full;
+  outline: 1px solid var(--stroke-outline);
+
+  padding-inline: $size-5;
+  margin-left: $size-10;
+
+  transition: box-shadow 0.2s ease-in-out;
+
+  & svg {
+    font-size: $size-18;
+    fill: var(--icon-base);
+  }
+
+  & .hamburger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    margin-left: $size-10;
+    margin-right: $size-11;
+
+    width: 15px;
+    aspect-ratio: 1 / 1;
+
+    & span {
+      border-radius: $radius-full;
+      height: 2px;
+      width: 100%;
+      background-color: var(--bg-inverted);
+    }
+  }
+
+  @include hover {
+    box-shadow: $box-shadow-md;
+  }
+}
+
+.userLoginModalContaienr {
+  position: absolute;
+  top: calc(100% + $size-10);
+  right: 0;
+  width: 240px;
+  z-index: 100;
+  background-color: var(--bg-primary);
+  box-shadow: 0 0 20px 15px rgba(0, 0, 0, 0.05);
+
+  font-size: $text-3xl;
+  border-radius: $radius-3xl;
+
+  display: flex;
+  flex-direction: column;
+  & .divider {
+    height: 2px;
+    background-color: var(--bg-additive);
+  }
+
+  & .buttonWrapper {
+    padding-block: $size-5;
+    display: flex;
+    flex-direction: column;
+
+    & button {
+      text-align: left;
+      padding: 2rem;
+      &.signupInModalButton {
+        font-weight: 500;
+      }
+
+      &:hover {
+        background-color: var(--bg-additive);
+      }
+    }
+  }
+}

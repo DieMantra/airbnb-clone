@@ -1,6 +1,7 @@
 import { MouseEvent, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import styles from './Index.module.scss';
+import UserSection from './UserControls';
 
 function Index() {
   const [searchIsActive, setSearchIsActive] = useState(false);
@@ -12,7 +13,7 @@ function Index() {
         searchIsActive={searchIsActive}
         setSearchIsActive={setSearchIsActive}
       />
-      <div>nskanfksn</div>
+      <UserSection />
     </header>
   );
 }
@@ -42,14 +43,10 @@ function SearchControls({
   searchIsActive: boolean;
   setSearchIsActive: (e: boolean) => void;
 }) {
-  const [activeSection, setActiveSection] = useState<
-    'anywhere' | 'anyWeek' | 'addGuests'
-  >();
+  const [activeSection, setActiveSection] = useState('');
   const handleOnClick = (e: MouseEvent<HTMLButtonElement>) => {
     setSearchIsActive(true);
-    setActiveSection(
-      e.currentTarget.name as 'anywhere' | 'anyWeek' | 'addGuests',
-    );
+    setActiveSection(e.currentTarget.name);
   };
   console.log(activeSection);
   return (
@@ -60,7 +57,7 @@ function SearchControls({
       }`}
     >
       <button
-        // name="anywhere"
+        name="anywhere"
         onClick={handleOnClick}
         className={styles.searchBtn}
       >
